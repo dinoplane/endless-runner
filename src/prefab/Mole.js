@@ -5,6 +5,12 @@ class Mole extends Phaser.GameObjects.Sprite {
 
         // add object to existing scene
         scene.add.existing(this);
+
+        this.speed = 5;
+        this.plane = 0;
+        this.hasCart = false;
+        this.hasHat = false;
+        
     }
 
     update(){
