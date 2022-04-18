@@ -8,6 +8,7 @@ class Menu extends Phaser.Scene {
     }
 
     create(){
-        this.mole = new Mole(this, game.config.width/8, game.config.height/2, 'mole', 0);
+        this.mole = new Mole(this, game.config.width/4, 2.8*game.config.height/4, 'mole', 0);
+
     }
 }
