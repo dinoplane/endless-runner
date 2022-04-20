@@ -1,3 +1,5 @@
+// Refactor code so that we use arcade sprite instead.
+
 class Mole extends Phaser.GameObjects.Sprite {
     //POSITIONS = config;
     constructor(scene, x, y, cx, cy, texture, frame) {
@@ -20,6 +22,7 @@ class Mole extends Phaser.GameObjects.Sprite {
     }
 
     update(){
+
     }
 
     switchPlanes(){
@@ -35,5 +38,4 @@ class Mole extends Phaser.GameObjects.Sprite {
         this.cachedData.y = tmp[1];
         this.cachedData.scale = tmp[2];
     }
-
 }
