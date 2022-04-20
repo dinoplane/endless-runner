@@ -1,0 +1,3 @@
+class Pit extends Enemy{
+
+}

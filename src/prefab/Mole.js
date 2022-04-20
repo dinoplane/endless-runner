@@ -1,24 +1,27 @@
 // Refactor code so that we use arcade sprite instead.
 
-class Mole extends Phaser.GameObjects.Sprite {
+class Mole extends Phaser.Physics.Arcade.Sprite {
     //POSITIONS = config;
     constructor(scene, x, y, cx, cy, texture, frame) {
         super(scene, x, y, texture, frame);
 
         // add object to existing scene
         scene.add.existing(this);
+        scene.physics.add.existing(this);
 
         this.cachedData= {x: cx, y:cy, scale: 0.6}
     
         this.speed = 5;
         this.inBackground = false;
-        this.hasCart = false;
-        this.hasHat = false;
+        this.hits = 3;
+
+        this.setBounce(1,1).setCollideWorldBounds(true);;
 
         this.keySwitch = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         this.keySwitch.on('down', (key, event) => {
             this.switchPlanes();
         });
+        this.setImmovable(true);
     }
 
     update(){
