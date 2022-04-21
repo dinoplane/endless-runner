@@ -19,13 +19,13 @@ class Enemy extends Phaser.Physics.Arcade.Sprite{
         });
 
         console.log(this.body);
-        this.setOrigin(0,0);
+        //this.setOrigin(0,0);
         this.setBounce(1,1);
-        this.setCollideWorldBounds(true);
+        ////this.setCollideWorldBounds(true);
         this.refreshBody();
     }
 
-    handleCollision(){
+    handleCollision(mole){
 
     }
 

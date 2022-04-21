@@ -13,7 +13,7 @@ class Play extends Phaser.Scene {
     }
 
     create(){
-        this.physics.world.setBounds(-game.config.width/8, 0, 5*game.config.width/4, game.config.height);
+        this.physics.world.setBounds(-game.config.width/8, 0, 6*game.config.width/4, game.config.height);
 
         this.POSITIONS = [{x: game.config.width/4,       y: 2.7*game.config.height/4},
         {x: 2.0*game.config.width/4,   y: 2.1*game.config.height/4}]
@@ -25,9 +25,11 @@ class Play extends Phaser.Scene {
                                    'mole', 0);
 
         this.pits = [];
-        this.pits.push(new Enemy(this, this.game.config.width, this.POSITIONS[0].y, 'pit', 0, this.mole).setOrigin(0,0));
-       // this.mole2 = new Mole(this, 2.0 *game.config.width/4, 2.1*game.config.height/4, 'mole', 0);
-        
+        this.pits.push(new Enemy(this, this.game.config.width, 486 + 0*this.POSITIONS[0].y, 'pit', 0, this.mole).setOrigin(0,0));//.setOrigin(0,0));
+        //this.pits[0].setOrigin(0,0);
+        // this.mole2 = new Mole(this, 2.0 *game.config.width/4, 2.1*game.config.height/4, 'mole', 0);
+        console.log(this.pits[0].y);
+        console.log(this.POSITIONS[0].y)
        this.physics.add.collider(this.mole, this.pits[0]);
        console.log(this.mole, this.pits[0]);
        // set velocity of enemy instead of a dumb update
