@@ -1,5 +1,5 @@
 class Enemy extends Phaser.Physics.Arcade.Sprite{
-    constructor(scene, x, y, texture, frame, mole){
+    constructor(scene, x, y, texture, frame){
         super(scene, x, y, texture, frame);
 
         // add object to existing scene and physics
@@ -7,32 +7,27 @@ class Enemy extends Phaser.Physics.Arcade.Sprite{
         scene.physics.add.existing(this);
 
         this.visible = false;
-        this.mole = mole;
-
+        this.body.onWorldBounds = true;
+        this.setCollideWorldBounds(true);
 
         this.respawnTimer = scene.time.addEvent({
             delay: 5000, // ms
             callback: this.spawn,
-            //args: [],
             callbackScope: this,
             loop: true
         });
-
-        console.log(this.body);
-        //this.setOrigin(0,0);
-        //this.setBounce(1,1);
-        ////this.setCollideWorldBounds(true);
-        //this.refreshBody();
-        //this.setImmovable(true);
+        this.refreshBody();
     }
 
     spawn(){
+        this.respawnTimer.pause = true;
         this.visible = true;
         this.setVelocity(-600, 0);
-        this.respawnTimer.pause = true;
     }
 
     reset(){
         this.visible = false;
+        this.x = game.config.width;
+        this.respawnTimer.pause = false;
     }
 }

@@ -10,11 +10,12 @@ class Play extends Phaser.Scene {
         this.load.image('cave_back', './assets/ground_back.png');
         this.load.image('i_wall', './assets/i_wall.png');
         this.load.image('pit', './assets/pit.png');
-        this.load.spritesheet('mole', './assets/mole.png', {frameWidth: 128, frameHeight: 128, startFrame: 0, endFrame: 1});
+        this.load.spritesheet('mole', './assets/mole.png', {frameWidth: 128, frameHeight: 128, startFrame: 0, endFrame: 8});
     }
 
     create(){
-        this.physics.world.setBounds(-game.config.width/8, 0, 6*game.config.width/4, game.config.height);
+        this.gameOver = false;
+        this.physics.world.setBounds(-game.config.width/4, 0, 8*game.config.width/4, game.config.height);
 
         this.POSITIONS = [{x: game.config.width/4,       y: 2.7*game.config.height/4},
                           {x: 2.0*game.config.width/4,   y: 2.1*game.config.height/4}]
@@ -39,16 +40,24 @@ class Play extends Phaser.Scene {
             }
             f += 1;
         }
-        this.physics.add.collider(this.mole, i_walls);
-        
 
         this.pits = [];
-        this.pits.push(new Enemy(this, this.game.config.width, 486 + 0*this.POSITIONS[0].y, 'pit', 0, this.mole).setOrigin(0,0));//.setOrigin(0,0));
+        this.pits.push(new Enemy(this, 5*this.game.config.width/8,
+                                        this.POSITIONS[0].y, 
+                                        'pit', 0)
+                                        .setOrigin(0,0));
+        let s =  (game.config.height - this.pits[0].y) / this.pits[0].width
+        this.pits[0].setScale(s);
+        this.pits[0].refreshBody();
+        
         //this.pits[0].setOrigin(0,0);
+
+        console.log();
         // this.mole2 = new Mole(this, 2.0 *game.config.width/4, 2.1*game.config.height/4, 'mole', 0);
-        console.log(this.pits[0].y);
+
+        console.log("After: ", this.pits[0].y);
         console.log(this.POSITIONS[0].y)
-       this.physics.add.collider(this.mole, this.pits[0], );
+       
        console.log(this.mole, this.pits[0]);
        // set velocity of enemy instead of a dumb update
 
@@ -67,12 +76,43 @@ class Play extends Phaser.Scene {
            drag: 0.0005,
            maxSpeed: 1.0
        };
-   
        controls = new Phaser.Cameras.Controls.SmoothedKeyControl(controlConfig);
+
+       this.keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
+
+       this.keyR.on('down', (key) => {
+           console.log("bruh", this.gameOver);
+           if (this.gameOver){
+               console.log("cringe")
+           
+
+            this.scene.restart();
+           }
+    });
+
+       this.add.rectangle(0, 0, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0, 0);
+       this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0, 0);
+       this.add.rectangle(0, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0, 0);
+       this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0, 0);
+
+
+       this.physics.add.collider(this.mole, i_walls);
+       this.physics.add.overlap(this.mole, this.pits, this.handlePits);
+       this.physics.world.on('worldbounds', this.onWorldBounds);
     }
 
-    handlePits(){
+    onWorldBounds(body){
+        console.log(body.gameObject);
+        body.gameObject.reset();
+        
+    }
 
+    handlePits(mole, pit){
+        console.log("AAAAAAA")
+        mole.scene.gameOver = true;
+        console.log(this.gameOver)
+        mole.destroy();
+        mole = null;
     }
 
     update(time, delta){
@@ -84,5 +124,7 @@ class Play extends Phaser.Scene {
         // });
         this.mole.update();
         controls.update(delta);
+
+        console.log(this.gameOver)
     }
 }
