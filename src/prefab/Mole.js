@@ -36,7 +36,7 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
             x: cx,
             y: cy,
             scale: scale,
-            duration: 500,
+            duration: 250,
             ease: 'Sine.easeInOut',
             easeParams: [ 3.5 ],
             //delay: 1000,
@@ -51,12 +51,12 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
             x: x,
             y: y,
             scale: 1,
-            duration: 500,
+            duration: 250,
             ease: 'Sine.easeInOut',
             easeParams: [ 3.5 ],
             //delay: 1000,
             onStart: (target) => {this.setImmovable(true);},
-            onComplete: (target) => {this.setImmovable(false); this.switching = false;},
+            onComplete: (target) => {this.setImmovable(false); this.switching = false; },
             onUpdate: () => { console.log(this.backToFront); },
             paused: true
         });
@@ -133,10 +133,6 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         this.visible = false;
     }
 
-    transition(){
-        
-    }
-
     tweenStart(){
         //REmove Collision
     }
@@ -145,8 +141,6 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         var tmp = [this.centers[+this.plane], this.y, this.scale];
         this.transitions[+this.plane].data[0].start = this.x;
         this.transitions[+this.plane].play();
-
-
         this.plane = !this.plane;
 
         // // Set the data

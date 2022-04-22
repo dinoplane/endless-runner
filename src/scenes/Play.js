@@ -133,18 +133,19 @@ class Play extends Phaser.Scene {
             obstacle.y = posY;
             obstacle.active = true;
             obstacle.visible = true;
-            //let s =  (game.config.height - this.y) / this.pits[0].width
-            //obstacle.setScale(s);
-            //obstacle.refreshBody();
+            
             this.obstaclePool.remove(obstacle);
         }
         else{
-            obstacle = this.physics.add.sprite(posX, posY, "pit");
+            obstacle = this.physics.add.sprite(posX, posY, "pit").setOrigin(0,0);
+            let s =  (game.config.height - obstacle.y) / obstacle.width
+            obstacle.setScale(s);
             obstacle.setImmovable(true);
-            obstacle.setVelocityX(gameOptions.obstacleStartSpeed * -1);
+            obstacle.setVelocityX(-600);
+            obstacle.refreshBody();
             this.obstacleGroup.add(obstacle);
         }
-        obstacle.displayWidth = obstacleWidth;
+        //obstacle.displayWidth = obstacleWidth;
         this.nextObstacleDistance = Phaser.Math.Between(gameOptions.spawnRange[0], gameOptions.spawnRange[1]);
     }
 
@@ -174,7 +175,7 @@ class Play extends Phaser.Scene {
         this.obstacleGroup.getChildren().forEach(function(obstacle){
             let obstacleDistance = game.config.width - obstacle.x - obstacle.displayWidth / 2;
             minDistance = Math.min(minDistance, obstacleDistance);
-            if(obstacle.x < - obstacle.displayWidth / 2){
+            if(obstacle.x < - obstacle.displayWidth){
                 this.obstacleGroup.killAndHide(obstacle);
                 this.obstacleGroup.remove(obstacle);
             }
