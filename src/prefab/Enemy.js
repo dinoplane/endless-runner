@@ -8,19 +8,10 @@ class Enemy extends Phaser.Physics.Arcade.Sprite{
 
         this.visible = false;
         this.body.onWorldBounds = true;
-        this.setCollideWorldBounds(true);
-
-        this.respawnTimer = scene.time.addEvent({
-            delay: 5000, // ms
-            callback: this.spawn,
-            callbackScope: this,
-            loop: true
-        });
-        this.refreshBody();
+        this.setCollideWorldBounds(true).refreshBody();
     }
 
     spawn(){
-        this.respawnTimer.pause = true;
         this.visible = true;
         this.setVelocity(-600, 0);
     }
@@ -28,6 +19,5 @@ class Enemy extends Phaser.Physics.Arcade.Sprite{
     reset(){
         this.visible = false;
         this.x = game.config.width;
-        this.respawnTimer.pause = false;
     }
 }

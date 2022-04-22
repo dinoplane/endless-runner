@@ -18,6 +18,7 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         this.centers = [x, cx]
         this.hits = 3;
         this.score = 0;
+        this.gameOver = false;
 
         this.run = this.anims.create({
             key: 'run',
@@ -37,38 +38,46 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         this.keyLEFT = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
 
         this.keyRIGHT.on('down', (key) => {
-            this.setVelocity(150, 0);
-            this.run.frameRate = this.speed*20;
-            this.play('run');
+            if (!this.gameOver){
+                this.setVelocity(150, 0);
+                this.run.frameRate = this.speed*20;
+                this.play('run');
+            }
         });
 
         this.keyRIGHT.on('up', (key) => {
-            if (!this.keyLEFT.isDown){
-                 this.setVelocity(0);
-                 this.run.frameRate = this.speed*10;
-        } else {
-                console.log("right is up!")
-                this.setVelocity(-150, 0);
-                this.run.frameRate = this.speed*5;
+            if (!this.gameOver){
+                if (!this.keyLEFT.isDown){
+                    this.setVelocity(0);
+                    this.run.frameRate = this.speed*10;
+                } else {
+                    console.log("right is up!")
+                    this.setVelocity(-150, 0);
+                    this.run.frameRate = this.speed*5;
+                }
+                this.play('run');
             }
-            this.play('run');
         });
 
         this.keyLEFT.on('down', (key) => {
-            this.setVelocity(-150, 0);
-            this.run.frameRate = this.speed*3;
-            this.play('run');
+            if (!this.gameOver){
+                this.setVelocity(-150, 0);
+                this.run.frameRate = this.speed*5;
+                this.play('run');
+            }
         });
 
         this.keyLEFT.on('up', (key) => {
-            if (!this.keyRIGHT.isDown){
-                this.setVelocity(0);
-                this.run.frameRate = this.speed*10;
-            } else {
-                this.setVelocity(150, 0)
-                this.run.frameRate = this.speed*3;//this.speed*20;
-            };
-            this.play('run');
+            if (!this.gameOver){
+                if (!this.keyRIGHT.isDown){
+                    this.setVelocity(0);
+                    this.run.frameRate = this.speed*10;
+                } else {
+                    this.setVelocity(150, 0)
+                    this.run.frameRate = this.speed*20;
+                };
+                this.play('run');
+            }
         });
 
         //Invisible barriers are set in Play
@@ -78,7 +87,8 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         this.score += this.speed;        
     }
 
-    gameOver(){
+    onGameOver(){
+        this.gameOver = true;
         this.visible = false;
     }
 

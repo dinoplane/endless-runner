@@ -28,6 +28,7 @@ class Play extends Phaser.Scene {
         this.mole = new Mole(this, this.POSITIONS[0].x, this.POSITIONS[0].y,
                                    this.POSITIONS[1].x, this.POSITIONS[1].y, 
                                    this.SCALE, 'mole', 0);
+                                   
         //Invisble barriers for mole
         var i_walls = this.physics.add.staticGroup();
         let f = 0;
@@ -42,7 +43,7 @@ class Play extends Phaser.Scene {
         }
 
         this.pits = [];
-        this.pits.push(new Enemy(this, 5*this.game.config.width/8,
+        this.pits.push(new Pit(this, 5*this.game.config.width/8,
                                         this.POSITIONS[0].y, 
                                         'pit', 0)
                                         .setOrigin(0,0));
@@ -109,22 +110,16 @@ class Play extends Phaser.Scene {
 
     handlePits(mole, pit){
         console.log("AAAAAAA")
+        mole.onGameOver();
         mole.scene.gameOver = true;
         console.log(this.gameOver)
-        mole.destroy();
-        mole = null;
     }
 
     update(time, delta){
         this.cave_wall.tilePositionX += this.mole.speed;
         this.cave_front.tilePositionX += this.mole.speed;
         this.cave_back.tilePositionX += this.mole.speed/2;
-        // this.pits.forEach( (pit) => {
-        //     pit.update(); // show me combos
-        // });
         this.mole.update();
         controls.update(delta);
-
-        console.log(this.gameOver)
     }
 }
