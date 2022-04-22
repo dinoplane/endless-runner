@@ -20,6 +20,7 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         this.score = 0;
         this.gameOver = false;
 
+        // Animations
         this.run = this.anims.create({
             key: 'run',
             frames:  this.anims.generateFrameNumbers('mole', { start: 0, end: 8, first: 0}),
@@ -28,6 +29,30 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         });
         this.play('run');
 
+        //Tweens
+        this.frontToBack = this.scene.tweens.create({
+            targets: this,
+            x: cx,
+            y: cy,
+            duration: 3000,
+            ease: 'Back',
+            easeParams: [ 3.5 ],
+            delay: 1000
+        });
+
+        this.backToFront = this.scene.tweens.create({
+            targets: this,
+            x: x,
+            y: y,
+            duration: 3000,
+            ease: 'Back',
+            easeParams: [ 3.5 ],
+            delay: 1000
+        });
+
+
+
+        // Controls
         this.keySwitch = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         this.keySwitch.on('down', (key, event) => {
             this.switchPlanes();
@@ -92,6 +117,13 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         this.visible = false;
     }
 
+    transition(){
+        
+    }
+
+    tweenStart(){
+        //REmove Collision
+    }
 
     switchPlanes(){ // basically a swap for 3 
         var tmp = [this.centers[+this.plane], this.y, this.scale];
@@ -107,4 +139,6 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         this.cachedData.y = tmp[1];
         this.cachedData.scale = tmp[2];
     }
+
+
 }

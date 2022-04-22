@@ -42,24 +42,45 @@ class Play extends Phaser.Scene {
             f += 1;
         }
 
-        this.pits = [];
-        this.pits.push(new Pit(this, 5*this.game.config.width/8,
-                                        this.POSITIONS[0].y, 
-                                        'pit', 0)
-                                        .setOrigin(0,0));
-        let s =  (game.config.height - this.pits[0].y) / this.pits[0].width
-        this.pits[0].setScale(s);
-        this.pits[0].refreshBody();
+        // Create dynamic obstacles
+        // group with all active obstacles.
+        this.obstacleGroup = this.add.group({
+            // once a obstacle is removed, it's added to the pool
+            removeCallback: function(obstacle){
+                obstacle.scene.obstaclePool.add(obstacle)
+            }
+        });
+ 
+        // pool
+        this.obstaclePool = this.add.group({
+ 
+            // once a obstacle is removed from the pool, it's added to the active obstacles group
+            removeCallback: function(obstacle){
+                obstacle.scene.obstacleGroup.add(obstacle)
+            }
+        });
+
+        this.addObstacle(game.config.height - this.POSITIONS[0].y, 5*this.game.config.width/8, this.POSITIONS[0].y, );
+
+
+        // this.pits = [];
+        // this.pits.push(new Pit(this, 5*this.game.config.width/8,
+        //                                 this.POSITIONS[0].y, 
+        //                                 'pit', 0)
+        //                                 .setOrigin(0,0));
+        // let s =  (game.config.height - this.pits[0].y) / this.pits[0].width
+        // this.pits[0].setScale(s);
+        // this.pits[0].refreshBody();
         
         //this.pits[0].setOrigin(0,0);
 
         console.log();
         // this.mole2 = new Mole(this, 2.0 *game.config.width/4, 2.1*game.config.height/4, 'mole', 0);
 
-        console.log("After: ", this.pits[0].y);
-        console.log(this.POSITIONS[0].y)
+        //console.log("After: ", this.pits[0].y);
+        //console.log(this.POSITIONS[0].y)
        
-       console.log(this.mole, this.pits[0]);
+       //console.log(this.mole, this.pits[0]);
        // set velocity of enemy instead of a dumb update
 
        // Debugging tool
@@ -98,10 +119,36 @@ class Play extends Phaser.Scene {
 
 
        this.physics.add.collider(this.mole, i_walls);
-       this.physics.add.overlap(this.mole, this.pits, this.handlePits);
+       this.physics.add.overlap(this.mole, this.obstacleGroup);//this.handlePits);
        this.physics.world.on('worldbounds', this.onWorldBounds);
     }
 
+    //Obstacle creation
+    // the core of the script: obstacle are added from the pool or created on the fly
+    addObstacle(obstacleWidth, posX, posY){
+        let obstacle;
+        if(this.obstaclePool.getLength()){
+            obstacle = this.obstaclePool.getFirst();
+            obstacle.x = posX;
+            obstacle.y = posY;
+            obstacle.active = true;
+            obstacle.visible = true;
+            //let s =  (game.config.height - this.y) / this.pits[0].width
+            //obstacle.setScale(s);
+            //obstacle.refreshBody();
+            this.obstaclePool.remove(obstacle);
+        }
+        else{
+            obstacle = this.physics.add.sprite(posX, posY, "pit");
+            obstacle.setImmovable(true);
+            obstacle.setVelocityX(gameOptions.obstacleStartSpeed * -1);
+            this.obstacleGroup.add(obstacle);
+        }
+        obstacle.displayWidth = obstacleWidth;
+        this.nextObstacleDistance = Phaser.Math.Between(gameOptions.spawnRange[0], gameOptions.spawnRange[1]);
+    }
+
+    // Collision Callbacks
     onWorldBounds(body){
         console.log(body.gameObject);
         body.gameObject.reset();
@@ -121,5 +168,22 @@ class Play extends Phaser.Scene {
         this.cave_back.tilePositionX += this.mole.speed/2;
         this.mole.update();
         controls.update(delta);
+
+        // recycling obstacles
+        let minDistance = game.config.width;
+        this.obstacleGroup.getChildren().forEach(function(obstacle){
+            let obstacleDistance = game.config.width - obstacle.x - obstacle.displayWidth / 2;
+            minDistance = Math.min(minDistance, obstacleDistance);
+            if(obstacle.x < - obstacle.displayWidth / 2){
+                this.obstacleGroup.killAndHide(obstacle);
+                this.obstacleGroup.remove(obstacle);
+            }
+        }, this);
+    
+        // adding new obstacles
+        if(minDistance > this.nextObstacleDistance){
+            var nextObstacleWidth = Phaser.Math.Between(gameOptions.obstacleSizeRange[0], gameOptions.obstacleSizeRange[1]);
+            this.addObstacle(nextObstacleWidth, game.config.width + nextObstacleWidth / 2,this.POSITIONS[0].y);
+        }
     }
 }
