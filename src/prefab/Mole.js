@@ -21,6 +21,8 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         this.gameOver = false;
         this.switching = false;
 
+        this.setMaxVelocity(150, 0);
+
         // Animations
         this.run = this.anims.create({
             key: 'run',
@@ -80,7 +82,7 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
 
         this.keyRIGHT.on('down', (key) => {
             if (!this.gameOver){
-                this.setVelocity(150, 0);
+                this.setAcceleration(150, 0);
                 this.run.frameRate = this.speed*20;
                 this.play('run');
             }
@@ -89,11 +91,11 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         this.keyRIGHT.on('up', (key) => {
             if (!this.gameOver){
                 if (!this.keyLEFT.isDown){
-                    this.setVelocity(0);
+                    this.setAcceleration(0, 0);
                     this.run.frameRate = this.speed*10;
                 } else {
                     console.log("right is up!")
-                    this.setVelocity(-150, 0);
+                    this.setAcceleration(-150, 0);
                     this.run.frameRate = this.speed*5;
                 }
                 this.play('run');
@@ -102,7 +104,7 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
 
         this.keyLEFT.on('down', (key) => {
             if (!this.gameOver){
-                this.setVelocity(-150, 0);
+                this.setAcceleration(-150, 0);
                 this.run.frameRate = this.speed*5;
                 this.play('run');
             }
@@ -111,10 +113,10 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         this.keyLEFT.on('up', (key) => {
             if (!this.gameOver){
                 if (!this.keyRIGHT.isDown){
-                    this.setVelocity(0);
+                    this.setAcceleration(0, 0);
                     this.run.frameRate = this.speed*10;
                 } else {
-                    this.setVelocity(150, 0)
+                    this.setAcceleration(150, 0);
                     this.run.frameRate = this.speed*20;
                 };
                 this.play('run');

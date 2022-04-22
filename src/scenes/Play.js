@@ -15,11 +15,14 @@ class Play extends Phaser.Scene {
 
     create(){
         this.gameOver = false;
-        this.physics.world.setBounds(-game.config.width/4, 0, 8*game.config.width/4, game.config.height);
-
         this.POSITIONS = [{x: game.config.width/4,       y: 2.7*game.config.height/4},
-                          {x: 2.0*game.config.width/4,   y: 2.1*game.config.height/4}]
+        {x: 2.0*game.config.width/4,   y: 2.1*game.config.height/4}]
         this.SCALE = 0.6;
+        this.WORLD_BOUNDS = {min: -game.config.width/4, max: 8*game.config.width/4}
+
+        this.physics.world.setBounds(this.WORLD_BOUNDS.min, 0, this.WORLD_BOUNDS.max, game.config.height);
+
+
 
         this.cave_wall = this.add.tileSprite(0, 0, game.config.width, game.config.height, 'cave_wall').setOrigin(0, 0);
         this.cave_back = this.add.tileSprite(0, this.POSITIONS[1].y, game.config.width, 2.7*game.config.height/4, 'cave_back').setOrigin(0,0);
@@ -171,9 +174,9 @@ class Play extends Phaser.Scene {
         controls.update(delta);
 
         // recycling obstacles
-        let minDistance = game.config.width;
+        let minDistance = this.WORLD_BOUNDS.max;
         this.obstacleGroup.getChildren().forEach(function(obstacle){
-            let obstacleDistance = game.config.width - obstacle.x - obstacle.displayWidth / 2;
+            let obstacleDistance = this.WORLD_BOUNDS.max - obstacle.x - obstacle.displayWidth / 2;
             minDistance = Math.min(minDistance, obstacleDistance);
             if(obstacle.x < - obstacle.displayWidth){
                 this.obstacleGroup.killAndHide(obstacle);
@@ -184,7 +187,7 @@ class Play extends Phaser.Scene {
         // adding new obstacles
         if(minDistance > this.nextObstacleDistance){
             var nextObstacleWidth = Phaser.Math.Between(gameOptions.obstacleSizeRange[0], gameOptions.obstacleSizeRange[1]);
-            this.addObstacle(nextObstacleWidth, game.config.width + nextObstacleWidth / 2,this.POSITIONS[0].y);
+            this.addObstacle(nextObstacleWidth, this.WORLD_BOUNDS.max + nextObstacleWidth / 2,this.POSITIONS[0].y);
         }
     }
 }
