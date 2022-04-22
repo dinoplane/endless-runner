@@ -19,6 +19,7 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         this.hits = 3;
         this.score = 0;
         this.gameOver = false;
+        this.switching = false;
 
         // Animations
         this.run = this.anims.create({
@@ -35,12 +36,13 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
             x: cx,
             y: cy,
             scale: scale,
-            duration: 3000,
-            ease: 'Back.easeInOut',
+            duration: 500,
+            ease: 'Sine.easeInOut',
             easeParams: [ 3.5 ],
             //delay: 1000,
             onStart: (target) => {this.setImmovable(true);},
-            onComplete: (target) => {this.setImmovable(false);},
+            onComplete: (target) => {this.setImmovable(false); this.switching = false;},
+            onUpdate: () => { console.log(this.frontToBack); },
             paused: true
         });
 
@@ -49,12 +51,13 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
             x: x,
             y: y,
             scale: 1,
-            duration: 3000,
-            ease: 'Back.easeInOut',
+            duration: 500,
+            ease: 'Sine.easeInOut',
             easeParams: [ 3.5 ],
             //delay: 1000,
             onStart: (target) => {this.setImmovable(true);},
-            onComplete: (target) => {this.setImmovable(false);},
+            onComplete: (target) => {this.setImmovable(false); this.switching = false;},
+            onUpdate: () => { console.log(this.backToFront); },
             paused: true
         });
         
@@ -63,7 +66,10 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         // Controls
         this.keySwitch = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         this.keySwitch.on('down', (key, event) => {
-            this.switchPlanes();
+            if (!this.switching){
+                this.switching = true;
+                this.switchPlanes();
+            }
         });
         
 
@@ -137,6 +143,7 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
 
     switchPlanes(){ // basically a swap for 3 
         var tmp = [this.centers[+this.plane], this.y, this.scale];
+        this.transitions[+this.plane].data[0].start = this.x;
         this.transitions[+this.plane].play();
 
 
