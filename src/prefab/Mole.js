@@ -34,29 +34,39 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
             targets: this,
             x: cx,
             y: cy,
+            scale: scale,
             duration: 3000,
-            ease: 'Back',
+            ease: 'Back.easeInOut',
             easeParams: [ 3.5 ],
-            delay: 1000
+            //delay: 1000,
+            onStart: (target) => {this.setImmovable(true);},
+            onComplete: (target) => {this.setImmovable(false);},
+            paused: true
         });
 
         this.backToFront = this.scene.tweens.create({
             targets: this,
             x: x,
             y: y,
+            scale: 1,
             duration: 3000,
-            ease: 'Back',
+            ease: 'Back.easeInOut',
             easeParams: [ 3.5 ],
-            delay: 1000
+            //delay: 1000,
+            onStart: (target) => {this.setImmovable(true);},
+            onComplete: (target) => {this.setImmovable(false);},
+            paused: true
         });
-
-
+        
+        this.transitions = [this.frontToBack, this.backToFront]
 
         // Controls
         this.keySwitch = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         this.keySwitch.on('down', (key, event) => {
             this.switchPlanes();
         });
+        
+
         this.setPushable(true);
         
         this.keyRIGHT = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
@@ -127,17 +137,20 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
 
     switchPlanes(){ // basically a swap for 3 
         var tmp = [this.centers[+this.plane], this.y, this.scale];
+        this.transitions[+this.plane].play();
+
+
         this.plane = !this.plane;
 
-        // Set the data
-        this.x = this.cachedData.x;
-        this.y = this.cachedData.y;
-        this.scale = this.cachedData.scale;
+        // // Set the data
+        // this.x = this.cachedData.x;
+        // this.y = this.cachedData.y;
+        // this.scale = this.cachedData.scale;
 
-        // save the data
-        this.cachedData.x = tmp[0];
-        this.cachedData.y = tmp[1];
-        this.cachedData.scale = tmp[2];
+        // // save the data
+        // this.cachedData.x = tmp[0];
+        // this.cachedData.y = tmp[1];
+        // this.cachedData.scale = tmp[2];
     }
 
 
