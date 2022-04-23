@@ -1,5 +1,4 @@
-# RocketHavoc
+# Mole
 
-A mod of Rocket Patrol
+A mole game
 
-https://dinoplane.github.io/RocketHavoc/
