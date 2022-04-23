@@ -1,4 +1,4 @@
-# Mole
+# Mole Rush
 
 A mole game
 
