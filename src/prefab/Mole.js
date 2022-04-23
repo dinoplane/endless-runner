@@ -12,9 +12,9 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
 
         this.cachedData= {x: cx, y:cy, scale: scale}
     
+        this.depth = 7;
         this.speed = 5;
-        this.offset = 0;
-        this.plane = 0;
+        this.plane = false;
         this.centers = [x, cx]
         this.hits = 3;
         this.score = 0;
@@ -43,8 +43,11 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
             easeParams: [ 3.5 ],
             //delay: 1000,
             onStart: (target) => {this.setImmovable(true);},
-            onComplete: (target) => {this.setImmovable(false); this.switching = false;},
-            onUpdate: () => { console.log(this.frontToBack); },
+            onComplete: (target) => {
+                this.setImmovable(false);
+                this.switching = false;
+            },
+            onUpdate: () => {  },
             paused: true
         });
 
@@ -57,9 +60,14 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
             ease: 'Sine.easeInOut',
             easeParams: [ 3.5 ],
             //delay: 1000,
-            onStart: (target) => {this.setImmovable(true);},
-            onComplete: (target) => {this.setImmovable(false); this.switching = false; },
-            onUpdate: () => { console.log(this.backToFront); },
+            onStart: (target) => {
+                this.setImmovable(true);
+            },
+            onComplete: (target) => { 
+                this.setImmovable(false); 
+                this.switching = false;
+            },
+            onUpdate: () => {  },
             paused: true
         });
         
@@ -68,14 +76,13 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         // Controls
         this.keySwitch = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         this.keySwitch.on('down', (key, event) => {
-            if (!this.switching){
+            if (!this.switching && !this.gameOver){
                 this.switching = true;
                 this.switchPlanes();
             }
         });
         
-
-        this.setPushable(true);
+        this.setPushable(true).setDepth(3);
         
         this.keyRIGHT = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
         this.keyLEFT = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
@@ -127,6 +134,7 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
     }
 
     update(){
+        //console.log("my depth!", this.depth)
         this.score += this.speed;        
     }
 
@@ -139,21 +147,11 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         //REmove Collision
     }
 
-    switchPlanes(){ // basically a swap for 3 
+    switchPlanes(){ // basically a swap for 3 values but using tweens.
         var tmp = [this.centers[+this.plane], this.y, this.scale];
         this.transitions[+this.plane].data[0].start = this.x;
         this.transitions[+this.plane].play();
         this.plane = !this.plane;
-
-        // // Set the data
-        // this.x = this.cachedData.x;
-        // this.y = this.cachedData.y;
-        // this.scale = this.cachedData.scale;
-
-        // // save the data
-        // this.cachedData.x = tmp[0];
-        // this.cachedData.y = tmp[1];
-        // this.cachedData.scale = tmp[2];
     }
 
 

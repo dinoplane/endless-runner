@@ -1,23 +1,37 @@
 class Enemy extends Phaser.Physics.Arcade.Sprite{
-    constructor(scene, x, y, texture, frame){
-        super(scene, x, y, texture, frame);
+    constructor(scene, x, y, cy, scale, texture, plane){
+        super(scene, x, y, texture, 0);
 
         // add object to existing scene and physics
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
-        this.visible = false;
-        this.body.onWorldBounds = true;
-        this.setCollideWorldBounds(true).refreshBody();
+        this.cachedData= {y:cy, scale: scale, depth: 3}
+
+        this.plane = 0;
+        this.depth = 6;
+        this.setPlane(plane);
+        this.setImmovable();
+
+        this.body.setSize(this.width - 100, this.height, true);
+        this.refreshBody();
     }
 
-    spawn(){
-        this.visible = true;
-        this.setVelocity(-600, 0);
-    }
+    setPlane(plane){
+        if (this.plane != plane){
+            this.plane = plane;
+            let tmp = [this.y, this.scale, this.depth]
 
-    reset(){
-        this.visible = false;
-        this.x = game.config.width;
-    }
+            // Set the data
+            this.y = this.cachedData.y;
+            this.scale = this.cachedData.scale;
+            this.depth = this.cachedData.depth;
+
+            // // save the data
+            this.cachedData.y = tmp[0];
+            this.cachedData.scale = tmp[1];
+            this.cachedData.depth = tmp[2];
+        }
+    } 
+
 }
