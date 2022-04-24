@@ -111,7 +111,7 @@ class Play extends Phaser.Scene {
 
         
         //this.physics.add.overlap(this.mole, this.obstacleGroup);
-       this.physics.add.overlap(this.mole, this.obstacleGroup);//, this.handlePits);
+       this.physics.add.overlap(this.mole, this.obstacleGroup,this.handlePits);
        //this.physics.world.on('worldbounds', this.onWorldBounds);
     }
 
@@ -150,7 +150,7 @@ class Play extends Phaser.Scene {
             obstacle.depth = 3;
             obstacle.scale = this.SCALE;
         }
-        obstacle.setVelocityX(this.mole.speed*-100/(obstacle.plane + 1));
+        obstacle.setVelocityX(this.mole.speed*-100);
 
         console.log("Plane, y, depth: ", obstacle.plane, obstacle.y, obstacle.depth)
         this.nextObstacleDistance = Phaser.Math.Between(gameOptions.spawnRange[0], gameOptions.spawnRange[1]);
@@ -170,7 +170,7 @@ class Play extends Phaser.Scene {
     }
 
     handlePits(mole, pit){
-        if (mole.plane == pit.plane){
+        if (mole.plane == pit.plane && !mole.switching){
             console.log("AAAAAAA")
             mole.onGameOver();
             mole.scene.gameOver = true;

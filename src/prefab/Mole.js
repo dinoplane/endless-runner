@@ -27,7 +27,7 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         this.speedTimer = scene.time.addEvent({
             delay: 30000,
             callback: () => {
-                this.speed += 2
+                this.speed += 1;
                 this.scene.updateSpeed();
             },
             callbackScope: this,
@@ -134,6 +134,7 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
             onComplete: (target) => {
                 this.setImmovable(false);
                 this.switching = false;
+                this.plane = 1;
             },
             onUpdate: () => {  },
             paused: true
@@ -154,6 +155,7 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
             onComplete: (target) => { 
                 this.setImmovable(false); 
                 this.switching = false;
+                this.plane = 0;
             },
             onUpdate: () => {  },
             paused: true
@@ -178,7 +180,6 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         console.log("After end: ", this.transitions[+this.plane].data[0].end);
         
         this.transitions[+this.plane].play();
-        this.plane = !this.plane;
     }
 
 
