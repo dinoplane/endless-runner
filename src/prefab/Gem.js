@@ -10,6 +10,7 @@ class Gem extends Enemy{
         //     callbackScope: this,
         //     loop: true
         // });
+        this.value = 5000;
         this.refreshBody();
     }
 }

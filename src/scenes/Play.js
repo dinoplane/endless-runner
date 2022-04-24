@@ -17,12 +17,15 @@ class Play extends Phaser.Scene {
 
     create(){
         this.gameOver = false;
+        
         this.POSITIONS = [{x: game.config.width/4,       y: 2.7*game.config.height/4},
                           {x: 2.0*game.config.width/4,   y: 2.1*game.config.height/4}]
         this.SCALE = 0.6;
         this.WORLD_BOUNDS = {min: -game.config.width/2, max: 6*game.config.width/4}
 
         //this.physics.world.setBounds(this.WORLD_BOUNDS.min, 0, this.WORLD_BOUNDS.max, game.config.height);
+        this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, highScore);
+        this.scoreRight = this.add.text(game.config.width - 100-2*(borderUISize - borderPadding), borderUISize + borderPadding*2, distance);
 
         this.cave_wall = this.add.tileSprite(0, 0, game.config.width, game.config.height, 'cave_wall')
                                 .setOrigin(0, 0).setDepth(0);
@@ -31,8 +34,8 @@ class Play extends Phaser.Scene {
         this.cave_front = this.add.tileSprite(0, this.POSITIONS[0].y, game.config.width, 2.7*game.config.height/4, 'cave_front')
                                 .setOrigin(0,0).setDepth(5);
 
-        this.bat = this.add.tileSprite(0, this.POSITIONS[0].y, game.config.width, 2.7*game.config.height/4, 'bat')
-                                .setOrigin(0,0).setDepth(3);
+        this.bat = new Bat(this, this.WORLD_BOUNDS.max, this.POSITIONS[0].y, this.POSITIONS[1].y, this.SCALE, 1)
+                                .setOrigin(0,0).setDepth(6);
        
         this.mole = new Mole(this, this.POSITIONS[0].x, this.POSITIONS[0].y,
                                    this.POSITIONS[1].x, this.POSITIONS[1].y, 
@@ -208,6 +211,7 @@ class Play extends Phaser.Scene {
             this.cave_back.tilePositionX += this.mole.speed/2;
             this.mole.update();
             controls.update(delta);
+            distance++;
 
             // recycling obstacles
             let minDistance = this.WORLD_BOUNDS.max;
@@ -228,7 +232,10 @@ class Play extends Phaser.Scene {
                 //console.log(this.POSITIONS);
                 this.addObstacle(nextObstacleWidth, this.WORLD_BOUNDS.max, this.getRandomInt(2));
             }
-            this.bat.update();
+            this.bat.tilePositionX+=this.mole.speed;
+            highScore+=distance;
+            this.scoreLeft.text=highScore;
+            this.scoreRight.text=distance;
         }
     }
 
