@@ -158,7 +158,7 @@ class Play extends Phaser.Scene {
 
     updateSpeed(){
         this.obstacleGroup.getChildren().forEach((obstacle) => {
-            obstacle.setVelocityX(this.mole.speed*-100/(obstacle.plane + 1));
+            obstacle.setVelocityX(this.mole.speed*-100);
         });
     }
 
@@ -202,7 +202,7 @@ class Play extends Phaser.Scene {
             let minDistance = this.WORLD_BOUNDS.max;
             this.obstacleGroup.getChildren().forEach(function(obstacle){
                 //obstacle.y = 486; // Gets  offset by 160 for some reason???
-                let obstacleDistance = this.WORLD_BOUNDS.max - obstacle.x - obstacle.displayWidth / 2;
+                let obstacleDistance = this.WORLD_BOUNDS.max - obstacle.x - obstacle.displayWidth;
                 minDistance = Math.min(minDistance, obstacleDistance);
                 if(obstacle.x < - obstacle.displayWidth){
                     this.obstacleGroup.killAndHide(obstacle);
