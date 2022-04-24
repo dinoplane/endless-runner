@@ -232,7 +232,7 @@ class Play extends Phaser.Scene {
                 //console.log(this.POSITIONS);
                 this.addObstacle(nextObstacleWidth, this.WORLD_BOUNDS.max, this.getRandomInt(2));
             }
-            this.bat.tilePositionX+=this.mole.speed;
+            this.bat.update();
             highScore+=distance;
             this.scoreLeft.text=highScore;
             this.scoreRight.text=distance;

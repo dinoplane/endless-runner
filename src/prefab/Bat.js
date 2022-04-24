@@ -14,7 +14,7 @@ class Bat extends Enemy{
         this.refreshBody();
     }
     update(){
-        this.x-=this.moveSpeed;
+        this.setVelocity(-200);
         if(this.x<=0-this.width){
             this.reset();
         }
