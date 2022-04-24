@@ -12,14 +12,29 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
 
         this.cachedData= {x: cx, y:cy, scale: scale}
     
+        this.origy = y;
+        this.depth = 7;
         this.speed = 5;
-        this.offset = 0;
-        this.plane = 0;
+        this.plane = false;
         this.centers = [x, cx]
         this.hits = 3;
         this.score = 0;
         this.gameOver = false;
+        this.switching = false;
 
+        this.setMaxVelocity(150, 0);
+
+        this.speedTimer = scene.time.addEvent({
+            delay: 2000,
+            callback: () => {
+                this.speed += 2
+                this.scene.updateSpeed();
+            },
+            callbackScope: this,
+            loop: true
+        })
+
+        // Animations
         this.run = this.anims.create({
             key: 'run',
             frames:  this.anims.generateFrameNumbers('mole', { start: 0, end: 8, first: 0}),
@@ -28,18 +43,25 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         });
         this.play('run');
 
+
+
+        // Controls
         this.keySwitch = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         this.keySwitch.on('down', (key, event) => {
-            this.switchPlanes();
+            if (!this.switching && !this.gameOver){
+                this.switching = true;
+                this.switchPlanes();
+            }
         });
-        this.setPushable(true);
+        
+        this.setPushable(true).setDepth(3);
         
         this.keyRIGHT = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
         this.keyLEFT = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
 
         this.keyRIGHT.on('down', (key) => {
             if (!this.gameOver){
-                this.setVelocity(150, 0);
+                this.setAcceleration(150, 0);
                 this.run.frameRate = this.speed*20;
                 this.play('run');
             }
@@ -48,11 +70,11 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         this.keyRIGHT.on('up', (key) => {
             if (!this.gameOver){
                 if (!this.keyLEFT.isDown){
-                    this.setVelocity(0);
+                    this.setAcceleration(0, 0);
                     this.run.frameRate = this.speed*10;
                 } else {
                     console.log("right is up!")
-                    this.setVelocity(-150, 0);
+                    this.setAcceleration(-150, 0);
                     this.run.frameRate = this.speed*5;
                 }
                 this.play('run');
@@ -61,7 +83,7 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
 
         this.keyLEFT.on('down', (key) => {
             if (!this.gameOver){
-                this.setVelocity(-150, 0);
+                this.setAcceleration(-150, 0);
                 this.run.frameRate = this.speed*5;
                 this.play('run');
             }
@@ -70,10 +92,10 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         this.keyLEFT.on('up', (key) => {
             if (!this.gameOver){
                 if (!this.keyRIGHT.isDown){
-                    this.setVelocity(0);
+                    this.setAcceleration(0, 0);
                     this.run.frameRate = this.speed*10;
                 } else {
-                    this.setVelocity(150, 0)
+                    this.setAcceleration(150, 0);
                     this.run.frameRate = this.speed*20;
                 };
                 this.play('run');
@@ -84,6 +106,7 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
     }
 
     update(){
+        //console.log("my depth!", this.depth)
         this.score += this.speed;        
     }
 
@@ -92,19 +115,71 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         this.visible = false;
     }
 
-
-    switchPlanes(){ // basically a swap for 3 
-        var tmp = [this.centers[+this.plane], this.y, this.scale];
-        this.plane = !this.plane;
-
-        // Set the data
-        this.x = this.cachedData.x;
-        this.y = this.cachedData.y;
-        this.scale = this.cachedData.scale;
-
-        // save the data
-        this.cachedData.x = tmp[0];
-        this.cachedData.y = tmp[1];
-        this.cachedData.scale = tmp[2];
+    tweenStart(){
+        //REmove Collision
     }
+
+    switchPlanes(){ // basically a swap for 3 values but using tweens.
+        //Tweens
+        this.frontToBack = this.scene.tweens.create({
+            targets: this,
+            x: this.x + 100,
+            y: this.cachedData.y,
+            scale: this.cachedData.scale,
+            duration: 250,
+            ease: 'Cubic.easeInOut',
+            easeParams: [ 3.5 ],
+            //delay: 1000,
+            onStart: (target) => {this.setImmovable(true);},
+            onComplete: (target) => {
+                this.setImmovable(false);
+                this.switching = false;
+            },
+            onUpdate: () => {  },
+            paused: true
+        });
+
+        this.backToFront = this.scene.tweens.create({
+            targets: this,
+            x: this.x - 100,
+            y: this.origy,
+            scale: 1,
+            duration: 250,
+            ease: 'Cubic.easeInOut',
+            easeParams: [ 3.5 ],
+            //delay: 1000,
+            onStart: (target) => {
+                this.setImmovable(true);
+            },
+            onComplete: (target) => { 
+                this.setImmovable(false); 
+                this.switching = false;
+            },
+            onUpdate: () => {  },
+            paused: true
+        });
+        
+        this.transitions = [this.frontToBack, this.backToFront]
+
+
+        //var tmp = [this.centers[+this.plane], this.y, this.scale];
+
+        
+        console.log("Before start: ", this.transitions[+this.plane].data[0].start);
+        console.log("Before end: ", this.transitions[+this.plane].data[0].end);
+        
+
+        
+        this.transitions[+this.plane].data[0].start = this.x;
+        this.transitions[+this.plane].updateTo('x', this.x + 450);
+
+        console.log("After start: ", this.transitions[+this.plane].data[0].start);
+
+        console.log("After end: ", this.transitions[+this.plane].data[0].end);
+        
+        this.transitions[+this.plane].play();
+        this.plane = !this.plane;
+    }
+
+
 }

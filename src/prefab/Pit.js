@@ -1,23 +1,15 @@
 class Pit extends Enemy{
-    constructor(scene, x, y){
-        super(scene, x, y, 'pit', 0);
+    static slots = [];
+    
+    constructor(scene, x, y, cy, scale, plane){
+        super(scene, x, y, cy, scale, 'pit', plane);
 
-        this.respawnTimer = scene.time.addEvent({
-            delay: 5000, // ms
-            callback: this.spawn,
-            callbackScope: this,
-            loop: true
-        });
+        // this.respawnTimer = scene.time.addEvent({
+        //     delay: 5000, // ms
+        //     callback: this.spawn,
+        //     callbackScope: this,
+        //     loop: true
+        // });
         this.refreshBody();
-    }
-
-    spawn(){
-        this.respawnTimer.pause = true;
-        super.spawn()
-    }
-
-    reset(){
-        super.reset();
-        this.respawnTimer.pause = false;
     }
 }

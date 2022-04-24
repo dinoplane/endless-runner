@@ -1,5 +1,5 @@
 class Play extends Phaser.Scene {
-
+    static OBSTACLE_TYPE = ["pit", "bat"];
     constructor(){
         super("playScene");
     }
@@ -15,93 +15,154 @@ class Play extends Phaser.Scene {
 
     create(){
         this.gameOver = false;
-        this.physics.world.setBounds(-game.config.width/4, 0, 8*game.config.width/4, game.config.height);
-
         this.POSITIONS = [{x: game.config.width/4,       y: 2.7*game.config.height/4},
                           {x: 2.0*game.config.width/4,   y: 2.1*game.config.height/4}]
         this.SCALE = 0.6;
+        this.WORLD_BOUNDS = {min: -game.config.width/2, max: 6*game.config.width/4}
 
-        this.cave_wall = this.add.tileSprite(0, 0, game.config.width, game.config.height, 'cave_wall').setOrigin(0, 0);
-        this.cave_back = this.add.tileSprite(0, this.POSITIONS[1].y, game.config.width, 2.7*game.config.height/4, 'cave_back').setOrigin(0,0);
-        this.cave_front = this.add.tileSprite(0, this.POSITIONS[0].y, game.config.width, 2.7*game.config.height/4, 'cave_front').setOrigin(0,0);
+        //this.physics.world.setBounds(this.WORLD_BOUNDS.min, 0, this.WORLD_BOUNDS.max, game.config.height);
+
+        this.cave_wall = this.add.tileSprite(0, 0, game.config.width, game.config.height, 'cave_wall')
+                                .setOrigin(0, 0).setDepth(0);
+        this.cave_back = this.add.tileSprite(0, this.POSITIONS[1].y, game.config.width, 2.7*game.config.height/4, 'cave_back')
+                                .setOrigin(0,0).setDepth(1);
+        this.cave_front = this.add.tileSprite(0, this.POSITIONS[0].y, game.config.width, 2.7*game.config.height/4, 'cave_front')
+                                .setOrigin(0,0).setDepth(5);
        
         this.mole = new Mole(this, this.POSITIONS[0].x, this.POSITIONS[0].y,
                                    this.POSITIONS[1].x, this.POSITIONS[1].y, 
-                                   this.SCALE, 'mole', 0);
+                                   this.SCALE, 'mole', 0).setDepth(7);
                                    
         //Invisble barriers for mole
-        var i_walls = this.physics.add.staticGroup();
-        let f = 0;
-        for (let pos of this.POSITIONS){
-            console.log("Pos: ", pos)
-            let j = (f == 1) ? this.SCALE: 1;
-            console.log("J: ", j)
-            for (let i = -1; i < 2; i += 2){
-                i_walls.create(pos.x + i * Mole.MAX_OFFSET * j, pos.y, 'i_wall').setImmovable();
+        // var drag_walls = this.physics.add.staticGroup();
+        // var rdrag_walls = this.physics.add.staticGroup();
+        // let f = 0;
+        // for (let pos of this.POSITIONS){
+        //     //console.log("Pos: ", pos)
+        //     let j = (f == 1) ? this.SCALE: 1;
+        //     //console.log("J: ", j)
+        //     for (let i = -1; i < 2; i += 2){
+        //         drag_walls.create(pos.x + i * Mole.MAX_OFFSET * j, pos.y, 'i_wall').setImmovable();
+        //         rdrag_walls.create(pos.x + i * (Mole.MAX_OFFSET - 50) * j, pos.y, 'i_wall').setImmovable();
+        //     }
+        //     f += 1;
+        // }
+        // this.physics.add.overlap(this.mole, drag_walls, this.handleDrag);
+        // this.physics.add.overlap(this.mole, rdrag_walls, this.resetDrag);
+        //this.minDepth = drag_walls.depth;
+
+        // Create dynamic obstacles
+        //Group of pits
+        this.pitGroup = this.add.group();
+
+        // group with all active obstacles.
+        this.obstacleGroup = this.add.group({
+            // once a obstacle is removed, it's added to the pool
+            removeCallback: function(obstacle){
+                obstacle.scene.obstaclePool.add(obstacle)
             }
-            f += 1;
-        }
+        });
+ 
+        // pool
+        this.obstaclePool = this.add.group({
+            // once a obstacle is removed from the pool, it's added to the active obstacles group
+            removeCallback: function(obstacle){
+                obstacle.scene.obstacleGroup.add(obstacle)
+            }
+        });
 
-        this.pits = [];
-        this.pits.push(new Pit(this, 5*this.game.config.width/8,
-                                        this.POSITIONS[0].y, 
-                                        'pit', 0)
-                                        .setOrigin(0,0));
-        let s =  (game.config.height - this.pits[0].y) / this.pits[0].width
-        this.pits[0].setScale(s);
-        this.pits[0].refreshBody();
-        
-        //this.pits[0].setOrigin(0,0);
+        this.objectGroups = {pit: this.pitGroup}
 
-        console.log();
-        // this.mole2 = new Mole(this, 2.0 *game.config.width/4, 2.1*game.config.height/4, 'mole', 0);
-
-        console.log("After: ", this.pits[0].y);
-        console.log(this.POSITIONS[0].y)
-       
-       console.log(this.mole, this.pits[0]);
-       // set velocity of enemy instead of a dumb update
+        this.addObstacle(game.config.height - this.POSITIONS[0].y, this.game.config.width, 0);
 
        // Debugging tool
        var cursors = this.input.keyboard.createCursorKeys();
 
        var controlConfig = {
-           camera: this.cameras.main,
-           left: cursors.left,
-           right: cursors.right,
-           up: cursors.up,
-           down: cursors.down,
-           zoomIn: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q),
-           zoomOut: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E),
-           acceleration: 0.06,
-           drag: 0.0005,
-           maxSpeed: 1.0
-       };
-       controls = new Phaser.Cameras.Controls.SmoothedKeyControl(controlConfig);
+            camera: this.cameras.main,
+            left: cursors.left,
+            right: cursors.right,
+            up: cursors.up,
+            down: cursors.down,
+            zoomIn: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q),
+            zoomOut: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E),
+            acceleration: 0.06,
+            drag: 0.0005,
+            maxSpeed: 1.0
+        };
+        controls = new Phaser.Cameras.Controls.SmoothedKeyControl(controlConfig);
 
-       this.keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
+        this.keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
 
-       this.keyR.on('down', (key) => {
+        this.keyR.on('down', (key) => {
            console.log("bruh", this.gameOver);
-           if (this.gameOver){
-               console.log("cringe")
-           
+           if (this.gameOver) this.scene.restart();
+        }); 
+       
+        this.add.rectangle(0, 0, game.config.width, borderUISize, 0xFFFFFF)
+                            .setOrigin(0, 0).setDepth(9);
+        this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0xFFFFFF)
+                            .setOrigin(0, 0).setDepth(9);
+        this.add.rectangle(0, 0, borderUISize, game.config.height, 0xFFFFFF)
+                            .setOrigin(0, 0).setDepth(9);
+        this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0xFFFFFF)
+                            .setOrigin(0, 0).setDepth(9);
 
-            this.scene.restart();
-           }
-    });
 
-       this.add.rectangle(0, 0, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0, 0);
-       this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0, 0);
-       this.add.rectangle(0, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0, 0);
-       this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0, 0);
-
-
-       this.physics.add.collider(this.mole, i_walls);
-       this.physics.add.overlap(this.mole, this.pits, this.handlePits);
-       this.physics.world.on('worldbounds', this.onWorldBounds);
+        
+        //this.physics.add.overlap(this.mole, this.obstacleGroup);
+       this.physics.add.overlap(this.mole, this.obstacleGroup);//, this.handlePits);
+       //this.physics.world.on('worldbounds', this.onWorldBounds);
     }
 
+    //Obstacle creation
+    // the core of the script: obstacle are added from the pool or created on the fly
+    addObstacle(obstacleWidth, posX, plane){
+
+        plane =  this.getRandomInt(2);
+        console.log("HOHOHOHOHHOHOHOHOHOHOO");
+        let obstacle;
+        if(this.obstaclePool.getLength()){
+            //console.log(ppp);
+            obstacle = this.obstaclePool.getFirst();
+            obstacle.x = posX;
+            obstacle.active = true;
+            obstacle.visible = true;
+            obstacle.refreshBody();
+            
+            this.obstaclePool.remove(obstacle);
+        }
+        else{
+            console.log("im y!: ", this.POSITIONS[plane]);
+            obstacle = new Pit(this, posX, this.POSITIONS[plane].y, this.POSITIONS[+!plane].y, this.SCALE, plane);  
+            //let s =  (game.config.height - obstacle.y) / obstacle.width;
+            obstacle.setOrigin(0,0).refreshBody();
+            this.obstacleGroup.add(obstacle);
+        }
+        obstacle.plane = plane;
+        if (obstacle.plane == 0){
+            obstacle.y = this.POSITIONS[0].y;
+            obstacle.depth = 6;
+            obstacle.scale = 1;
+        }
+        else {
+            obstacle.y = this.POSITIONS[1].y;
+            obstacle.depth = 3;
+            obstacle.scale = this.SCALE;
+        }
+        obstacle.setVelocityX(this.mole.speed*-100/(obstacle.plane + 1));
+
+        console.log("Plane, y, depth: ", obstacle.plane, obstacle.y, obstacle.depth)
+        this.nextObstacleDistance = Phaser.Math.Between(gameOptions.spawnRange[0], gameOptions.spawnRange[1]);
+    }
+
+    updateSpeed(){
+        this.obstacleGroup.getChildren().forEach((obstacle) => {
+            obstacle.setVelocityX(this.mole.speed*-100);
+        });
+    }
+
+    // Collision Callbacks
     onWorldBounds(body){
         console.log(body.gameObject);
         body.gameObject.reset();
@@ -109,17 +170,62 @@ class Play extends Phaser.Scene {
     }
 
     handlePits(mole, pit){
-        console.log("AAAAAAA")
-        mole.onGameOver();
-        mole.scene.gameOver = true;
-        console.log(this.gameOver)
+        if (mole.plane == pit.plane){
+            console.log("AAAAAAA")
+            mole.onGameOver();
+            mole.scene.gameOver = true;
+            console.log(this.gameOver)
+        }
+    }
+
+    handleDrag(mole, drag){
+        mole.setDrag(600);
+        mole.setAcceleration(0);
+        console.log("helo")
+    }
+
+    resetDrag(mole, drag){
+        mole.setDrag(0);
+        console.log("reset drag")
     }
 
     update(time, delta){
-        this.cave_wall.tilePositionX += this.mole.speed;
-        this.cave_front.tilePositionX += this.mole.speed;
-        this.cave_back.tilePositionX += this.mole.speed/2;
-        this.mole.update();
-        controls.update(delta);
+        
+        if (!this.gameOver){
+            this.cave_wall.tilePositionX += this.mole.speed;
+            this.cave_front.tilePositionX += this.mole.speed;
+            this.cave_back.tilePositionX += this.mole.speed/2;
+            this.mole.update();
+            controls.update(delta);
+
+            // recycling obstacles
+            let minDistance = this.WORLD_BOUNDS.max;
+            this.obstacleGroup.getChildren().forEach(function(obstacle){
+                //obstacle.y = 486; // Gets  offset by 160 for some reason???
+                let obstacleDistance = this.WORLD_BOUNDS.max - obstacle.x - obstacle.displayWidth;
+                minDistance = Math.min(minDistance, obstacleDistance);
+                if(obstacle.x < - obstacle.displayWidth){
+                    this.obstacleGroup.killAndHide(obstacle);
+                    this.obstacleGroup.remove(obstacle);
+                }
+            }, this);
+        
+            // adding new obstacles
+            if(minDistance > this.nextObstacleDistance){
+                var nextObstacleWidth = Phaser.Math.Between(gameOptions.obstacleSizeRange[0], gameOptions.obstacleSizeRange[1]);
+                ; //console.log("Im I!:",i);
+                //console.log(this.POSITIONS);
+                this.addObstacle(nextObstacleWidth, this.WORLD_BOUNDS.max, this.getRandomInt(2));
+            }
+        }
     }
+
+    getRandomInt(max = 0) {
+        return Math.floor(Math.random() * max);
+    }
+
+    getRandomInt(min=0, max = 0) {
+        return min + Math.floor(Math.random() * (max - min));
+    }
+
 }
