@@ -6,11 +6,13 @@ class Play extends Phaser.Scene {
 
     preload(){
         this.load.image('cave_wall', './assets/background.png');
+        this.load.image('gem', './assets/gem.png');
         this.load.image('cave_front', './assets/ground_front.png');
         this.load.image('cave_back', './assets/ground_back.png');
         this.load.image('i_wall', './assets/i_wall.png');
         this.load.image('pit', './assets/pit.png');
         this.load.spritesheet('mole', './assets/mole.png', {frameWidth: 128, frameHeight: 128, startFrame: 0, endFrame: 8});
+        this.load.spritesheet('bat', './assets/bat.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 6});
     }
 
     create(){
