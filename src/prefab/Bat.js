@@ -10,6 +10,16 @@ class Bat extends Enemy{
         //     callbackScope: this,
         //     loop: true
         // });
+        this.moveSpeed=5;
         this.refreshBody();
+    }
+    update(){
+        this.x-=this.moveSpeed;
+        if(this.x<=0-this.width){
+            this.reset();
+        }
+    }
+    reset(){
+        this.x=game.config.width;
     }
 }

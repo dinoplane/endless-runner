@@ -30,10 +30,19 @@ class Play extends Phaser.Scene {
                                 .setOrigin(0,0).setDepth(1);
         this.cave_front = this.add.tileSprite(0, this.POSITIONS[0].y, game.config.width, 2.7*game.config.height/4, 'cave_front')
                                 .setOrigin(0,0).setDepth(5);
+
+        this.bat = this.add.tileSprite(0, this.POSITIONS[0].y, game.config.width, 2.7*game.config.height/4, 'bat')
+                                .setOrigin(0,0).setDepth(3);
        
         this.mole = new Mole(this, this.POSITIONS[0].x, this.POSITIONS[0].y,
                                    this.POSITIONS[1].x, this.POSITIONS[1].y, 
                                    this.SCALE, 'mole', 0).setDepth(7);
+
+                                   this.anims.create({
+                                    key: 'flap',
+                                    frames: this.anims.generateFrameNumbers('bat', { start: 0, end: 6, first: 0}),
+                                    frameRate: 30
+                                });
                                    
         //Invisble barriers for mole
         // var drag_walls = this.physics.add.staticGroup();
@@ -219,6 +228,7 @@ class Play extends Phaser.Scene {
                 //console.log(this.POSITIONS);
                 this.addObstacle(nextObstacleWidth, this.WORLD_BOUNDS.max, this.getRandomInt(2));
             }
+            this.bat.update();
         }
     }
 
