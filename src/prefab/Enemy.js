@@ -12,8 +12,8 @@ class Enemy extends Phaser.Physics.Arcade.Sprite{
         this.depth = 6;
         this.setPlane(plane);
         this.setImmovable();
-
-        this.body.setSize(this.width - 200, this.height, true);
+ 
+        this.body.setSize(this.width - 50, this.height, true);
         this.refreshBody();
     }
 

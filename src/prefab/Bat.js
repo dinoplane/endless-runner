@@ -10,11 +10,12 @@ class Bat extends Enemy{
         //     callbackScope: this,
         //     loop: true
         // });
+        this.body.setSize(this.width - 20, this.height, true);
         this.moveSpeed=5;
         this.refreshBody();
     }
     update(){
-        this.setVelocityX(-200);
+        this.setVelocityX(-300);
         if(this.x<=0-this.width){
             this.reset();
         }
