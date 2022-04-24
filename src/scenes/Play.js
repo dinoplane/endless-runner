@@ -34,21 +34,21 @@ class Play extends Phaser.Scene {
                                    this.SCALE, 'mole', 0).setDepth(7);
                                    
         //Invisble barriers for mole
-        var drag_walls = this.physics.add.staticGroup();
-        var rdrag_walls = this.physics.add.staticGroup();
-        let f = 0;
-        for (let pos of this.POSITIONS){
-            //console.log("Pos: ", pos)
-            let j = (f == 1) ? this.SCALE: 1;
-            //console.log("J: ", j)
-            for (let i = -1; i < 2; i += 2){
-                drag_walls.create(pos.x + i * Mole.MAX_OFFSET * j, pos.y, 'i_wall').setImmovable();
-                rdrag_walls.create(pos.x + i * (Mole.MAX_OFFSET - 50) * j, pos.y, 'i_wall').setImmovable();
-            }
-            f += 1;
-        }
-        this.physics.add.overlap(this.mole, drag_walls, this.handleDrag);
-        this.physics.add.overlap(this.mole, rdrag_walls, this.resetDrag);
+        // var drag_walls = this.physics.add.staticGroup();
+        // var rdrag_walls = this.physics.add.staticGroup();
+        // let f = 0;
+        // for (let pos of this.POSITIONS){
+        //     //console.log("Pos: ", pos)
+        //     let j = (f == 1) ? this.SCALE: 1;
+        //     //console.log("J: ", j)
+        //     for (let i = -1; i < 2; i += 2){
+        //         drag_walls.create(pos.x + i * Mole.MAX_OFFSET * j, pos.y, 'i_wall').setImmovable();
+        //         rdrag_walls.create(pos.x + i * (Mole.MAX_OFFSET - 50) * j, pos.y, 'i_wall').setImmovable();
+        //     }
+        //     f += 1;
+        // }
+        // this.physics.add.overlap(this.mole, drag_walls, this.handleDrag);
+        // this.physics.add.overlap(this.mole, rdrag_walls, this.resetDrag);
         //this.minDepth = drag_walls.depth;
 
         // Create dynamic obstacles
@@ -111,15 +111,19 @@ class Play extends Phaser.Scene {
 
         
         //this.physics.add.overlap(this.mole, this.obstacleGroup);
-       this.physics.add.overlap(this.mole, this.obstacleGroup, this.handlePits);
+       this.physics.add.overlap(this.mole, this.obstacleGroup);//, this.handlePits);
        //this.physics.world.on('worldbounds', this.onWorldBounds);
     }
 
     //Obstacle creation
     // the core of the script: obstacle are added from the pool or created on the fly
     addObstacle(obstacleWidth, posX, plane){
+
+        plane =  this.getRandomInt(2);
+        console.log("HOHOHOHOHHOHOHOHOHOHOO");
         let obstacle;
         if(this.obstaclePool.getLength()){
+            //console.log(ppp);
             obstacle = this.obstaclePool.getFirst();
             obstacle.x = posX;
             obstacle.active = true;
@@ -132,11 +136,10 @@ class Play extends Phaser.Scene {
             console.log("im y!: ", this.POSITIONS[plane]);
             obstacle = new Pit(this, posX, this.POSITIONS[plane].y, this.POSITIONS[+!plane].y, this.SCALE, plane);  
             //let s =  (game.config.height - obstacle.y) / obstacle.width;
-            obstacle.setOrigin(0,0).setVelocityX(-600).refreshBody();
+            obstacle.setOrigin(0,0).refreshBody();
             this.obstacleGroup.add(obstacle);
         }
-
-
+        obstacle.plane = plane;
         if (obstacle.plane == 0){
             obstacle.y = this.POSITIONS[0].y;
             obstacle.depth = 6;
@@ -147,9 +150,16 @@ class Play extends Phaser.Scene {
             obstacle.depth = 3;
             obstacle.scale = this.SCALE;
         }
+        obstacle.setVelocityX(this.mole.speed*-100/(obstacle.plane + 1));
 
         console.log("Plane, y, depth: ", obstacle.plane, obstacle.y, obstacle.depth)
         this.nextObstacleDistance = Phaser.Math.Between(gameOptions.spawnRange[0], gameOptions.spawnRange[1]);
+    }
+
+    updateSpeed(){
+        this.obstacleGroup.getChildren().forEach((obstacle) => {
+            obstacle.setVelocityX(this.mole.speed*-100/(obstacle.plane + 1));
+        });
     }
 
     // Collision Callbacks
@@ -190,7 +200,7 @@ class Play extends Phaser.Scene {
 
             // recycling obstacles
             let minDistance = this.WORLD_BOUNDS.max;
-            this.obstacleGroup.getChildren().forEach(function(obstacle, index){
+            this.obstacleGroup.getChildren().forEach(function(obstacle){
                 //obstacle.y = 486; // Gets  offset by 160 for some reason???
                 let obstacleDistance = this.WORLD_BOUNDS.max - obstacle.x - obstacle.displayWidth / 2;
                 minDistance = Math.min(minDistance, obstacleDistance);
@@ -203,10 +213,19 @@ class Play extends Phaser.Scene {
             // adding new obstacles
             if(minDistance > this.nextObstacleDistance){
                 var nextObstacleWidth = Phaser.Math.Between(gameOptions.obstacleSizeRange[0], gameOptions.obstacleSizeRange[1]);
-                let i = Phaser.Math.Between(0, 1); //console.log("Im I!:",i);
+                ; //console.log("Im I!:",i);
                 //console.log(this.POSITIONS);
-                this.addObstacle(nextObstacleWidth, this.WORLD_BOUNDS.max, i);
+                this.addObstacle(nextObstacleWidth, this.WORLD_BOUNDS.max, this.getRandomInt(2));
             }
         }
     }
+
+    getRandomInt(max = 0) {
+        return Math.floor(Math.random() * max);
+    }
+
+    getRandomInt(min=0, max = 0) {
+        return min + Math.floor(Math.random() * (max - min));
+    }
+
 }
