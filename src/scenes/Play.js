@@ -44,8 +44,8 @@ class Play extends Phaser.Scene {
                                    this.anims.create({
                                     key: 'flap',
                                     frames: this.anims.generateFrameNumbers('bat', { start: 0, end: 6, first: 0}),
-                                    frameRate: 30
-                                });
+                                    frameRate: 15
+                                }); this.bat.play('flap');
                                    
         //Invisble barriers for mole
         // var drag_walls = this.physics.add.staticGroup();
