@@ -11,7 +11,9 @@ class Play extends Phaser.Scene {
         this.load.image('cave_back', './assets/ground_back.png');
         this.load.image('i_wall', './assets/i_wall.png');
         this.load.image('pit', './assets/pit.png');
-        this.load.spritesheet('mole', './assets/mole.png', {frameWidth: 128, frameHeight: 128, startFrame: 0, endFrame: 8});
+        this.load.spritesheet('molecart', './assets/molecart.png', {frameWidth: 128, frameHeight: 128, startFrame: 0, endFrame: 8});
+        this.load.spritesheet('molehat', './assets/molehat.png', {frameWidth: 128, frameHeight: 128, startFrame: 0, endFrame: 8});
+        this.load.spritesheet('molenude', './assets/molenude.png', {frameWidth: 128, frameHeight: 128, startFrame: 0, endFrame: 8});
         this.load.spritesheet('bat', './assets/bat.png', {frameWidth: 128, frameHeight: 64, startFrame: 0, endFrame: 6});
     }
 
@@ -33,13 +35,16 @@ class Play extends Phaser.Scene {
                                 .setOrigin(0,0).setDepth(1);
         this.cave_front = this.add.tileSprite(0, this.POSITIONS[0].y, game.config.width, 2.7*game.config.height/4, 'cave_front')
                                 .setOrigin(0,0).setDepth(5);
-        this.bat = new Bat(this, this.WORLD_BOUNDS.max, this.POSITIONS[0].y - 100, this.POSITIONS[1].y - 60, 1, 0)
-                                .setOrigin(0,0).setDepth(6);
-       
+
+
+
         this.mole = new Mole(this, this.POSITIONS[0].x, this.POSITIONS[0].y,
                                    this.POSITIONS[1].x, this.POSITIONS[1].y, 
-                                   this.SCALE, 'mole', 0).setDepth(7);
+                                   this.SCALE, 'molecart', 0).setDepth(7);
 
+        this.bat = new Bat(this, this.WORLD_BOUNDS.max, this.POSITIONS[0].y - 100, this.POSITIONS[1].y - 60, 1, 0)
+                                   .setOrigin(0,0).setDepth(6);
+        this.physics.add.overlap(this.mole, this.bat, this.handleBats);
                                    
         //Invisble barriers for mole
         var i_walls = this.physics.add.staticGroup();
@@ -93,7 +98,8 @@ class Play extends Phaser.Scene {
         this.keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
 
         this.keyR.on('down', (key) => {
-           if (this.gameOver) this.scene.restart();
+           if (this.gameOver) 
+                this.scene.restart();
         }); 
        
         this.add.rectangle(0, 0, game.config.width, borderUISize, 0xFFFFFF)
@@ -154,6 +160,15 @@ class Play extends Phaser.Scene {
     // Collision Callbacks
     onWorldBounds(body){
         body.gameObject.reset();
+    }
+
+    handleBats(mole, bat){
+        // The mole needs to be on the same plane, not switching and not damaged
+        if (mole.plane == bat.plane && !mole.switching & !mole.damaged){
+            console.log("Owww")
+            mole.takeDamage();
+            if (mole.hits == 0) mole.scene.gameOver = true;
+        }
     }
 
     handlePits(mole, pit){
