@@ -16,7 +16,7 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
     
         this.origy = y;
         this.depth = 7;
-        this.speed = 5;
+        this.speed = 10;
         this.plane = false;
         this.centers = [x, cx]
         this.hits = 3;
@@ -27,7 +27,6 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         this.setMaxVelocity(150, 0);
         this.setDrag(300);
         
-
         this.speedTimer = scene.time.addEvent({
             delay: 30000,
             callback: () => {
@@ -39,15 +38,13 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         })
 
         // Animations
-        this.run = this.anims.create({
+        this.anims.create({
             key: 'run',
             frames:  this.anims.generateFrameNumbers('mole', { start: 0, end: 8, first: 0}),
             frameRate: this.speed*10,
             repeat: -1
         });
         this.play('run');
-
-
 
         // Controls
         this.keySwitch = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
@@ -168,15 +165,9 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         });
         
         this.transitions = [this.frontToBack, this.backToFront]
-
-
-        //var tmp = [this.centers[+this.plane], this.y, this.scale];
-
         
         console.log("Before start: ", this.transitions[+this.plane].data[0].start);
         console.log("Before end: ", this.transitions[+this.plane].data[0].end);
-        
-
         
         this.transitions[+this.plane].data[0].start = this.x;
         this.transitions[+this.plane].updateTo('x', this.x + 450);

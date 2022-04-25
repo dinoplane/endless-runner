@@ -10,6 +10,17 @@ class Bat extends Enemy{
         //     callbackScope: this,
         //     loop: true
         // });
+
+
+        this.anims.create({
+            key: 'flap',
+            frames: this.anims.generateFrameNumbers('bat', { start: 0, end: 6, first: 0}),
+            frameRate: 15,
+            repeat: -1
+        }); 
+        
+        this.play('flap');
+
         this.body.setSize(this.width - 20, this.height, true);
         this.moveSpeed=5;
         this.refreshBody();
