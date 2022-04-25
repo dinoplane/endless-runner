@@ -98,7 +98,6 @@ class Play extends Phaser.Scene {
         this.keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
 
         this.keyR.on('down', (key) => {
-           console.log("bruh", this.gameOver);
            if (this.gameOver) this.scene.restart();
         }); 
        
@@ -121,12 +120,9 @@ class Play extends Phaser.Scene {
     //Obstacle creation
     // the core of the script: obstacle are added from the pool or created on the fly
     addObstacle(obstacleWidth, posX, plane){
-
         plane =  this.getRandomInt(2);
-        console.log("HOHOHOHOHHOHOHOHOHOHOO");
         let obstacle;
         if(this.obstaclePool.getLength()){
-            //console.log(ppp);
             obstacle = this.obstaclePool.getFirst();
             obstacle.x = posX;
             obstacle.active = true;
@@ -136,7 +132,6 @@ class Play extends Phaser.Scene {
             this.obstaclePool.remove(obstacle);
         }
         else{
-            console.log("im y!: ", this.POSITIONS[plane]);
             obstacle = new Pit(this, posX, this.POSITIONS[plane].y, this.POSITIONS[+!plane].y, this.SCALE, plane);  
             //let s =  (game.config.height - obstacle.y) / obstacle.width;
             obstacle.setOrigin(0,0).refreshBody();
@@ -154,8 +149,6 @@ class Play extends Phaser.Scene {
             obstacle.scale = this.SCALE;
         }
         obstacle.setVelocityX(this.mole.speed*-100);
-
-        console.log("Plane, y, depth: ", obstacle.plane, obstacle.y, obstacle.depth)
         this.nextObstacleDistance = Phaser.Math.Between(gameOptions.spawnRange[0], gameOptions.spawnRange[1]);
     }
 
@@ -167,29 +160,23 @@ class Play extends Phaser.Scene {
 
     // Collision Callbacks
     onWorldBounds(body){
-        console.log(body.gameObject);
         body.gameObject.reset();
-        
     }
 
     handlePits(mole, pit){
         if (mole.plane == pit.plane && !mole.switching){
-            console.log("AAAAAAA")
             mole.onGameOver();
             mole.scene.gameOver = true;
-            console.log(this.gameOver)
         }
     }
 
     handleDrag(mole, drag){
         mole.setDrag(600);
         mole.setAcceleration(0);
-        console.log("helo")
     }
 
     resetDrag(mole, drag){
         mole.setDrag(0);
-        console.log("reset drag")
     }
 
     update(time, delta){
@@ -217,8 +204,6 @@ class Play extends Phaser.Scene {
             // adding new obstacles
             if(minDistance > this.nextObstacleDistance){
                 var nextObstacleWidth = Phaser.Math.Between(gameOptions.obstacleSizeRange[0], gameOptions.obstacleSizeRange[1]);
-                ; //console.log("Im I!:",i);
-                //console.log(this.POSITIONS);
                 this.addObstacle(nextObstacleWidth, this.WORLD_BOUNDS.max, this.getRandomInt(2));
             }
             this.bat.update();
