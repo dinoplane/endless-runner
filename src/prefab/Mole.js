@@ -3,6 +3,8 @@
 class Mole extends Phaser.Physics.Arcade.Sprite {
     //POSITIONS = config;
     static MAX_OFFSET = 150;
+    static ACCEL = 600;
+
     constructor(scene, x, y, cx, cy, scale, texture, frame) {
         super(scene, x, y, texture, frame);
 
@@ -23,6 +25,8 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         this.switching = false;
 
         this.setMaxVelocity(150, 0);
+        this.setDrag(300);
+        
 
         this.speedTimer = scene.time.addEvent({
             delay: 30000,
@@ -59,9 +63,11 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         this.keyRIGHT = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
         this.keyLEFT = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
 
+        // Add other controls.
+
         this.keyRIGHT.on('down', (key) => {
             if (!this.gameOver){
-                this.setAcceleration(150, 0);
+                this.setAcceleration(Mole.ACCEL, 0);
                 this.run.frameRate = this.speed*20;
                 this.play('run');
             }
@@ -74,7 +80,7 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
                     this.run.frameRate = this.speed*10;
                 } else {
                     console.log("right is up!")
-                    this.setAcceleration(-150, 0);
+                    this.setAcceleration(-Mole.ACCEL, 0);
                     this.run.frameRate = this.speed*5;
                 }
                 this.play('run');
@@ -83,7 +89,7 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
 
         this.keyLEFT.on('down', (key) => {
             if (!this.gameOver){
-                this.setAcceleration(-150, 0);
+                this.setAcceleration(-Mole.ACCEL, 0);
                 this.run.frameRate = this.speed*5;
                 this.play('run');
             }
@@ -95,7 +101,7 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
                     this.setAcceleration(0, 0);
                     this.run.frameRate = this.speed*10;
                 } else {
-                    this.setAcceleration(150, 0);
+                    this.setAcceleration(Mole.ACCEL, 0);
                     this.run.frameRate = this.speed*20;
                 };
                 this.play('run');

@@ -33,7 +33,6 @@ class Play extends Phaser.Scene {
                                 .setOrigin(0,0).setDepth(1);
         this.cave_front = this.add.tileSprite(0, this.POSITIONS[0].y, game.config.width, 2.7*game.config.height/4, 'cave_front')
                                 .setOrigin(0,0).setDepth(5);
-
         this.bat = new Bat(this, this.WORLD_BOUNDS.max, this.POSITIONS[0].y, this.POSITIONS[1].y, this.SCALE, 1)
                                 .setOrigin(0,0).setDepth(6);
        
@@ -49,22 +48,11 @@ class Play extends Phaser.Scene {
                                 }); this.bat.play('flap');
                                    
         //Invisble barriers for mole
-        // var drag_walls = this.physics.add.staticGroup();
-        // var rdrag_walls = this.physics.add.staticGroup();
-        // let f = 0;
-        // for (let pos of this.POSITIONS){
-        //     //console.log("Pos: ", pos)
-        //     let j = (f == 1) ? this.SCALE: 1;
-        //     //console.log("J: ", j)
-        //     for (let i = -1; i < 2; i += 2){
-        //         drag_walls.create(pos.x + i * Mole.MAX_OFFSET * j, pos.y, 'i_wall').setImmovable();
-        //         rdrag_walls.create(pos.x + i * (Mole.MAX_OFFSET - 50) * j, pos.y, 'i_wall').setImmovable();
-        //     }
-        //     f += 1;
-        // }
-        // this.physics.add.overlap(this.mole, drag_walls, this.handleDrag);
-        // this.physics.add.overlap(this.mole, rdrag_walls, this.resetDrag);
-        //this.minDepth = drag_walls.depth;
+        var i_walls = this.physics.add.staticGroup();
+        var mole_bounds = [borderUISize, game.config.width-borderUISize];
+        for (let pos of mole_bounds)
+            i_walls.create(pos, 360, 'i_wall').setImmovable().setOrigin(0,0);
+        this.physics.add.collider(this.mole, i_walls);
 
         // Create dynamic obstacles
         //Group of pits
@@ -90,22 +78,22 @@ class Play extends Phaser.Scene {
 
         this.addObstacle(game.config.height - this.POSITIONS[0].y, this.game.config.width, 0);
 
-       // Debugging tool
-       var cursors = this.input.keyboard.createCursorKeys();
+    //    // Debugging tool
+    //    var cursors = this.input.keyboard.createCursorKeys();
 
-       var controlConfig = {
-            camera: this.cameras.main,
-            left: cursors.left,
-            right: cursors.right,
-            up: cursors.up,
-            down: cursors.down,
-            zoomIn: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q),
-            zoomOut: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E),
-            acceleration: 0.06,
-            drag: 0.0005,
-            maxSpeed: 1.0
-        };
-        controls = new Phaser.Cameras.Controls.SmoothedKeyControl(controlConfig);
+    //    var controlConfig = {
+    //         camera: this.cameras.main,
+    //         left: cursors.left,
+    //         right: cursors.right,
+    //         up: cursors.up,
+    //         down: cursors.down,
+    //         zoomIn: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q),
+    //         zoomOut: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E),
+    //         acceleration: 0.06,
+    //         drag: 0.0005,
+    //         maxSpeed: 1.0
+    //     };
+    //     controls = new Phaser.Cameras.Controls.SmoothedKeyControl(controlConfig);
 
         this.keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
 
@@ -211,7 +199,7 @@ class Play extends Phaser.Scene {
             this.cave_front.tilePositionX += this.mole.speed;
             this.cave_back.tilePositionX += this.mole.speed/2;
             this.mole.update();
-            controls.update(delta);
+            //controls.update(delta);
             distance++;
 
             // recycling obstacles

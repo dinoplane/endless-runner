@@ -7,10 +7,12 @@ var config = {
     physics: {
       default: 'arcade',
       arcade: {
-           debug: false
+           debug: true
       }
     }
   }
+
+// Some sort of message to convey the purpose of the mole
 
   // global game options
 let gameOptions = {
