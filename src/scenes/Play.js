@@ -76,6 +76,8 @@ class Play extends Phaser.Scene {
         this.objectGroups = {pit: this.pitGroup}
 
         this.nextObstacleDistance = 0;
+
+        this.physics.add.overlap(this.mole, this.obstacleGroup,); //this.handlePits);
         //this.addObstacle(game.config.height - this.POSITIONS[0].y, this.game.config.width, 0);
 
     //    // Debugging tool
@@ -112,8 +114,24 @@ class Play extends Phaser.Scene {
                             .setOrigin(0, 0).setDepth(9);
                             
         //this.physics.add.overlap(this.mole, this.obstacleGroup);
-       this.physics.add.overlap(this.mole, this.obstacleGroup,); //this.handlePits);
+       
        //this.physics.world.on('worldbounds', this.onWorldBounds);
+
+           // display score
+    let scoreConfig = {
+        fontFamily: 'Courier',
+        fontSize: '28px',
+        backgroundColor: '#F3B141',
+        color: '#843605',
+        align: 'right',
+        padding: {
+        top: 5,
+        bottom: 5,
+        },
+        fixedWidth: 100
+    }
+    this.scoreLabel = this.add.text(borderUISize + borderPadding, 
+                                    borderUISize + borderPadding*2, this.mole.score, scoreConfig).setDepth(10);
     }
 
     //Obstacle creation
@@ -188,12 +206,12 @@ class Play extends Phaser.Scene {
     }
 
     update(time, delta){
-        
         if (!this.gameOver){
             this.cave_wall.tilePositionX += this.mole.speed;
             this.cave_front.tilePositionX += this.mole.speed;
             this.cave_back.tilePositionX += this.mole.speed/2;
             this.mole.update();
+            this.scoreLabel.text = this.mole.score;
             //controls.update(delta);
             distance++;
 
@@ -219,6 +237,8 @@ class Play extends Phaser.Scene {
             this.scoreLeft.text=highScore;
             this.scoreRight.text=distance;
         }
+
+        
     }
 
     getRandomInt(max = 0) {

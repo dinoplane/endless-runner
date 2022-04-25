@@ -140,6 +140,8 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         });
 
         //Invisible barriers are set in Play
+
+
     }
 
     update(){
