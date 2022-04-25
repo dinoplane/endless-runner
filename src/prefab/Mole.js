@@ -26,16 +26,13 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         this.switching = false;
         this.damaged = false;
 
-        this.curr_state = 
-
         this.setMaxVelocity(150, 0);
         this.setDrag(300);
         
         this.speedTimer = scene.time.addEvent({
             delay: 30000,
             callback: () => {
-                this.speed += 1;
-                this.scene.updateSpeed();
+                this.crementSpeed(1);
             },
             callbackScope: this,
             loop: true
@@ -149,9 +146,15 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         this.score += this.speed;        
     }
 
+    crementSpeed(n){
+        this.speed += n;
+        this.scene.updateSpeed();
+    }
+
     takeDamage(){
         this.hits -= 1;
         this.damaged = true;
+        this.crementSpeed(-this.speed/2);
         if (this.hits == 0){
             this.onGameOver();
         } else {
