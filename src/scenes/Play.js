@@ -44,7 +44,7 @@ class Play extends Phaser.Scene {
 
         this.bat = new Bat(this, this.WORLD_BOUNDS.max, this.POSITIONS[0].y - 100, this.POSITIONS[1].y - 60, 1, 0)
                                    .setOrigin(0,0).setDepth(6);
-        this.physics.add.overlap(this.mole, this.bat, this.handleBats);
+        this.physics.add.overlap(this.mole, this.bat, (mole, bat) => {this.handleBats(mole, bat);});
                                    
         //Invisble barriers for mole
         var i_walls = this.physics.add.staticGroup();
@@ -77,7 +77,7 @@ class Play extends Phaser.Scene {
 
         this.nextObstacleDistance = 0;
 
-        this.physics.add.overlap(this.mole, this.obstacleGroup,); //this.handlePits);
+        this.physics.add.overlap(this.mole, this.obstacleGroup, (mole, pit) => {this.handlePits(mole, pit);});
         //this.addObstacle(game.config.height - this.POSITIONS[0].y, this.game.config.width, 0);
 
     //    // Debugging tool
@@ -185,15 +185,25 @@ class Play extends Phaser.Scene {
         if (mole.plane == bat.plane && !mole.switching & !mole.damaged){
             console.log("Owww")
             mole.takeDamage();
-            if (mole.hits == 0) mole.scene.gameOver = true;
+            if (mole.hits == 0) this.onGameOver();
         }
     }
 
     handlePits(mole, pit){
         if (mole.plane == pit.plane && !mole.switching){
-            mole.onGameOver();
-            mole.scene.gameOver = true;
+            this.onGameOver();
+            
         }
+    }
+
+    onGameOver(){
+        this.gameOver = true;
+        this.mole.onGameOver();
+        this.obstacleGroup.getChildren().forEach((obstacle) => {
+            obstacle.onGameOver();
+        });
+        this.bat.onGameOver();
+        // Stop all the obstacles
     }
 
     handleDrag(mole, drag){
@@ -237,8 +247,6 @@ class Play extends Phaser.Scene {
             this.scoreLeft.text=highScore;
             this.scoreRight.text=distance;
         }
-
-        
     }
 
     getRandomInt(max = 0) {

@@ -154,10 +154,9 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
     takeDamage(){
         this.hits -= 1;
         this.damaged = true;
-        this.crementSpeed(-this.speed/2);
-        if (this.hits == 0){
-            this.onGameOver();
-        } else {
+        
+        if (this.hits > 0){
+            this.crementSpeed(-this.speed/2);
             this.damageTimer.paused = false;
             console.log("Hits left: ", this.hits)
             this.play(Mole.ANIMS[this.hits-1]);

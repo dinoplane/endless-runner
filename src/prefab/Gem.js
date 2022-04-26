@@ -1,5 +1,5 @@
-class Gem extends Enemy{
-    static slots = [];
+class Gem extends Enemy{ // What if a bat was a gemds
+    static TYPES = [];
     
     constructor(scene, x, y, cy, scale, plane){
         super(scene, x, y, cy, scale, 'gem', plane);
@@ -13,4 +13,15 @@ class Gem extends Enemy{
         this.value = 5000;
         this.refreshBody();
     }
+
+    spawn(){
+        this.setVelocityX(-300);
+    }
+
+    reset(){
+        this.x = game.config.width;
+        this.setVelocityX(0);
+        this.respawnTimer.paused = false;
+    }
+
 }
