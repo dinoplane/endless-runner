@@ -110,6 +110,23 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         this.score += this.speed;        
     }
 
+    crementSpeed(n){
+        this.speed += n;
+        this.scene.updateSpeed();
+    }
+
+    takeDamage(){
+        this.hits -= 1;
+        this.damaged = true;
+        
+        if (this.hits > 0){
+            this.crementSpeed(-this.speed/3);
+            this.damageTimer.paused = false;
+            console.log("Hits left: ", this.hits)
+            this.play(Mole.ANIMS[this.hits-1]);
+        }
+    }
+
     onGameOver(){
         this.gameOver = true;
         this.visible = false;
@@ -181,6 +198,5 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         
         this.transitions[+this.plane].play();
     }
-
 
 }
