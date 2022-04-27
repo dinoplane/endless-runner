@@ -21,6 +21,7 @@ class Play extends Phaser.Scene {
 
     create(){
         this.gameOver = false;
+        this.ended=false;
         
         this.POSITIONS = [{x: game.config.width/4,       y: 2.7*game.config.height/4},
                           {x: 2.0*game.config.width/4,   y: 2.1*game.config.height/4}]
@@ -33,7 +34,7 @@ class Play extends Phaser.Scene {
 
         //this.physics.world.setBounds(this.WORLD_BOUNDS.min, 0, this.WORLD_BOUNDS.max, game.config.height);
         this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, highScore);
-        this.scoreRight = this.add.text(game.config.width - 100-2*(borderUISize - borderPadding), borderUISize + borderPadding*2, distance);
+        this.scoreRight = this.add.text(game.config.width -2*(borderUISize - borderPadding), borderUISize + borderPadding*2, distance);
 
         this.cave_wall = this.add.tileSprite(0, 0, game.config.width, game.config.height, 'cave_wall')
                                 .setOrigin(0, 0).setDepth(0);
@@ -136,7 +137,13 @@ class Play extends Phaser.Scene {
         this.keyR.on('down', (key) => {
            if (this.gameOver) 
                 this.scene.restart();
+                this.ended=false;
         }); 
+        // this.keyT.on('down', (key) => {
+        //     if (this.gameOver) 
+        //     this.scene.start("menuScene");
+        //     this.ended=false;
+        //  }); 
        
         this.add.rectangle(0, 0, game.config.width, borderUISize, 0xFFFFFF)
                             .setOrigin(0, 0).setDepth(9);
@@ -287,6 +294,26 @@ class Play extends Phaser.Scene {
             highScore+=distance;
             this.scoreLeft.text=highScore;
             this.scoreRight.text=distance;
+        }else if(this.ended==false){
+            //play death animation
+            //stop all actions
+            this.ended=true;
+            this.add.text(game.config.width/2, game.config.height/2 + 64, 'Game Over').setOrigin(0.5).setDepth(10);;
+            this.add.text(game.config.width/2, game.config.height/2 + 96, 'Press (R) to Restart or ← for Menu').setOrigin(0.5).setDepth(10);
+        // }else{
+        //     if(Phaser.Input.Keyboard.JustDown(keyLEFT)){
+        //         //maybe store a high score
+        //         highScore=0;
+        //         this.ended=false;
+        //         this.gameOver=false;
+        //         this.scene.start("menuScene");
+        //     }if(Phaser.Input.Keyboard.JustDown(keyR)){
+        //         //maybe store a high score
+        //         highScore=0;
+        //         this.ended=false;
+        //         this.gameOver=false;
+        //         this.scene.restart();
+        //     }
         }
     }
 
