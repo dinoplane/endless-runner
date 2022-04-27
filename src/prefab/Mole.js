@@ -3,7 +3,7 @@
 class Mole extends Phaser.Physics.Arcade.Sprite {
     //POSITIONS = config;
     static MAX_OFFSET = 150;
-    static ACCEL = 600;
+    static ACCEL = 700;
     static ANIMS = [ 'molenude_run', 'molehat_run', 'molecart_run']
 
     constructor(scene, x, y, cx, cy, scale, texture, frame) {
@@ -26,7 +26,7 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         this.switching = false;
         this.damaged = false;
 
-        this.setMaxVelocity(150, 0);
+        this.setMaxVelocity(300, 0);
         this.setDrag(300);
         
         this.speedTimer = scene.time.addEvent({
@@ -117,7 +117,9 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
 
         this.keyLEFT.on('down', (key) => {
             if (!this.gameOver){
-                this.setAcceleration(-Mole.ACCEL, 0);
+                //this.setVelocity(0, 0);
+                this.setAcceleration(-Mole.ACCEL*10, 0);
+                this.setMaxVelocity(550, 0);
                 this.moleanims[this.hits - 1].frameRate = this.speed*5;
                 this.play(Mole.ANIMS[this.hits-1]);
             }
@@ -127,9 +129,12 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
             if (!this.gameOver){
                 if (!this.keyRIGHT.isDown){
                     this.setAcceleration(0, 0);
+                    this.setMaxVelocity(300, 0);
                     this.moleanims[this.hits - 1].frameRate = this.speed*10;
                 } else {
                     this.setAcceleration(Mole.ACCEL, 0);
+                    this.setVelocity(0, 0);
+                    this.setMaxVelocity(300, 0);
                     this.moleanims[this.hits - 1].frameRate = this.speed*20;
                 };
                 this.play(Mole.ANIMS[this.hits-1]);
