@@ -29,10 +29,22 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         this.setMaxVelocity(150, 0);
         this.setDrag(300);
         
+        // Timers
+
+        this.scoreTimer = scene.time.addEvent({
+            delay: 1000/this.speed,
+            callback: () => {
+                this.score += 1;
+            },
+            callbackScope: this,
+            loop: true
+        })
+
+
         this.speedTimer = scene.time.addEvent({
             delay: 30000,
             callback: () => {
-                this.crementSpeed(1);
+                this.crementSpeed(2);
             },
             callbackScope: this,
             loop: true
@@ -141,22 +153,34 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
 
     }
 
-    update(){
+    updateScore(val){
+        this.score += val;
         //console.log("my depth!", this.depth)
-        this.score += this.speed;        
+        //this.score += this.speed;        
     }
 
     crementSpeed(n){
         this.speed += n;
+        this.scoreTimer.delay = 1000/this.speed;
         this.scene.updateSpeed();
     }
+    onXUp(){
+
+    }
+
+    onXDown(){
+        
+    }
+    
 
     takeDamage(){
         this.hits -= 1;
         this.damaged = true;
-        
-        if (this.hits > 0){
-            this.crementSpeed(-this.speed/2);
+
+        if (this.hits == 0){
+            this.onGameOver();
+        } else {
+            this.crementSpeed(-2*this.speed/3);
             this.damageTimer.paused = false;
             console.log("Hits left: ", this.hits)
             this.play(Mole.ANIMS[this.hits-1]);

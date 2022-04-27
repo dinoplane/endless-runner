@@ -1,5 +1,6 @@
 class Enemy extends Phaser.Physics.Arcade.Sprite{
     constructor(scene, x, y, cy, scale, texture, plane){
+        console.log("Actually I'm here", texture)
         super(scene, x, y, texture, 0);
 
         // add object to existing scene and physics

@@ -5,12 +5,14 @@ class Play extends Phaser.Scene {
     }
 
     preload(){
+
         this.load.image('cave_wall', './assets/background.png');
         this.load.image('gem', './assets/gem.png');
         this.load.image('cave_front', './assets/ground_front.png');
         this.load.image('cave_back', './assets/ground_back.png');
         this.load.image('i_wall', './assets/i_wall.png');
         this.load.image('pit', './assets/pit.png');
+
         this.load.spritesheet('molecart', './assets/molecart.png', {frameWidth: 128, frameHeight: 128, startFrame: 0, endFrame: 8});
         this.load.spritesheet('molehat', './assets/molehat.png', {frameWidth: 128, frameHeight: 128, startFrame: 0, endFrame: 8});
         this.load.spritesheet('molenude', './assets/molenude.png', {frameWidth: 128, frameHeight: 128, startFrame: 0, endFrame: 8});
@@ -23,7 +25,11 @@ class Play extends Phaser.Scene {
         this.POSITIONS = [{x: game.config.width/4,       y: 2.7*game.config.height/4},
                           {x: 2.0*game.config.width/4,   y: 2.1*game.config.height/4}]
         this.SCALE = 0.6;
-        this.WORLD_BOUNDS = {min: -game.config.width/2, max: 6*game.config.width/4}
+        this.WORLD_BOUNDS = {min: -game.config.width/2, max: 3*game.config.width}
+
+        this.bgMusic = this.add.audio('bgMusic');
+        this.bgMusic.loop = true;
+        this.bgMusic.play();
 
         //this.physics.world.setBounds(this.WORLD_BOUNDS.min, 0, this.WORLD_BOUNDS.max, game.config.height);
         this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, highScore);
@@ -41,8 +47,8 @@ class Play extends Phaser.Scene {
         this.mole = new Mole(this, this.POSITIONS[0].x, this.POSITIONS[0].y,
                                    this.POSITIONS[1].x, this.POSITIONS[1].y, 
                                    this.SCALE, 'molecart', 0).setDepth(7);
-
-        this.bat = new Bat(this, this.WORLD_BOUNDS.max, this.POSITIONS[0].y - 100, this.POSITIONS[1].y - 60, 1, 0)
+        console.log("BATS");
+        this.bat = new Bat(this, this.WORLD_BOUNDS.max, this.POSITIONS[0].y - 100, this.POSITIONS[1].y - 40, 1, 0)
                                    .setOrigin(0,0).setDepth(6);
         this.physics.add.overlap(this.mole, this.bat, (mole, bat) => {this.handleBats(mole, bat);});
                                    
@@ -78,6 +84,34 @@ class Play extends Phaser.Scene {
         this.nextObstacleDistance = 0;
 
         this.physics.add.overlap(this.mole, this.obstacleGroup, (mole, pit) => {this.handlePits(mole, pit);});
+
+        // gem
+        this.gem = new Gem(this, this.WORLD_BOUNDS.max, this.POSITIONS[0].y, this.POSITIONS[1].y, 1,'gem', 0);
+        this.gem.setVelocityX(-400);
+
+        
+        // // group with all active obstacles.
+        // this.obstacleGroup = this.add.group({
+        //     // once a obstacle is removed, it's added to the pool
+        //     removeCallback: function(obstacle){
+        //         obstacle.scene.obstaclePool.add(obstacle)
+        //     }
+        // });
+ 
+        // // pool
+        // this.obstaclePool = this.add.group({
+        //     // once a obstacle is removed from the pool, it's added to the active obstacles group
+        //     removeCallback: function(obstacle){
+        //         obstacle.scene.obstacleGroup.add(obstacle)
+        //     }
+        // });
+
+        // this.objectGroups = {pit: this.pitGroup}
+
+        // this.nextObstacleDistance = 0;
+
+        this.physics.add.overlap(this.mole, this.gem, this.handleGems);
+
         //this.addObstacle(game.config.height - this.POSITIONS[0].y, this.game.config.width, 0);
 
     //    // Debugging tool
@@ -204,6 +238,13 @@ class Play extends Phaser.Scene {
         });
         this.bat.onGameOver();
         // Stop all the obstacles
+    }
+    
+    handleGems(mole, gem){
+        if (mole.plane == gem.plane && !mole.switching){
+            mole.updateScore(gem.value);
+            gem.reset();
+        }
     }
 
     handleDrag(mole, drag){

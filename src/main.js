@@ -17,7 +17,8 @@ var config = {
   // global game options
 let gameOptions = {
   obstacleStartSpeed: 350,
-  spawnRange: [3*config.width/4, config.width*1.5],
+  spawnRange: [config.width, config.width*2.5],
+  gemSpawnRange: [config.width/2, config.width],
   obstacleSizeRange: [50, 250],
   playerGravity: 900,
   jumpForce: 400,

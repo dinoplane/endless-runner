@@ -1,9 +1,9 @@
-class Bat extends Enemy{
+class Bat extends Gem{
     static slots = [];
     
     constructor(scene, x, y, cy, scale, plane){
-        super(scene, x, y, cy, scale, 'bat', plane);
-
+        super(scene, x, y, cy, scale, 'bat', plane); // See what I did here?
+        
         this.respawnTimer = scene.time.addEvent({
             delay: 5000, // ms
             callback: this.spawn,
@@ -34,12 +34,12 @@ class Bat extends Enemy{
 
     spawn(){
         this.respawnTimer.paused = true;
-        this.setVelocityX(-300);
+        super.spawn();
     }
 
     reset(){
-        this.x = game.config.width;
-        this.setVelocityX(0);
+        super.reset();
         this.respawnTimer.paused = false;
     }
+
 }
