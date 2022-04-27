@@ -12,6 +12,8 @@ var config = {
     }
   }
 
+// Some sort of message to convey the purpose of the mole
+
   // global game options
 let gameOptions = {
   obstacleStartSpeed: 350,

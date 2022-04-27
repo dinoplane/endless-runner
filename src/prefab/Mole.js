@@ -3,6 +3,9 @@
 class Mole extends Phaser.Physics.Arcade.Sprite {
     //POSITIONS = config;
     static MAX_OFFSET = 150;
+    static ACCEL = 600;
+    static ANIMS = [ 'molenude_run', 'molehat_run', 'molecart_run']
+
     constructor(scene, x, y, cx, cy, scale, texture, frame) {
         super(scene, x, y, texture, frame);
 
@@ -14,35 +17,64 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
     
         this.origy = y;
         this.depth = 7;
-        this.speed = 5;
+        this.speed = 10;
         this.plane = false;
         this.centers = [x, cx]
         this.hits = 3;
         this.score = 0;
         this.gameOver = false;
         this.switching = false;
+        this.damaged = false;
 
         this.setMaxVelocity(150, 0);
-
+        this.setDrag(300);
+        
         this.speedTimer = scene.time.addEvent({
             delay: 30000,
             callback: () => {
-                this.speed += 1;
-                this.scene.updateSpeed();
+                this.crementSpeed(1);
             },
             callbackScope: this,
             loop: true
         })
 
+        this.damageTimer = scene.time.addEvent({
+            delay: 3000,
+            callback: () => {
+                console.log("Im here")
+                this.damaged = false;
+                this.damageTimer.paused = true;
+            },
+            callbackScope: this,
+            loop: true,
+            paused: true
+        })
+
         // Animations
-        this.run = this.anims.create({
-            key: 'run',
-            frames:  this.anims.generateFrameNumbers('mole', { start: 0, end: 8, first: 0}),
+        let molecart_run = this.anims.create({
+            key: 'molecart_run',
+            frames:  this.anims.generateFrameNumbers('molecart', { start: 0, end: 8, first: 0}),
             frameRate: this.speed*10,
             repeat: -1
         });
-        this.play('run');
 
+        let molehat_run = this.anims.create({
+            key: 'molehat_run',
+            frames:  this.anims.generateFrameNumbers('molehat', { start: 0, end: 8, first: 0}),
+            frameRate: this.speed*10,
+            repeat: -1
+        });
+
+        let molenude_run = this.anims.create({
+            key: 'molenude_run',
+            frames:  this.anims.generateFrameNumbers('molenude', { start: 0, end: 8, first: 0}),
+            frameRate: this.speed*10,
+            repeat: -1
+        });
+
+        this.moleanims = [molenude_run, molehat_run, molecart_run]
+
+        this.play(this.moleanims[this.hits - 1]);
 
 
         // Controls
@@ -59,11 +91,13 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         this.keyRIGHT = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
         this.keyLEFT = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
 
+        // Add other controls.
+
         this.keyRIGHT.on('down', (key) => {
             if (!this.gameOver){
-                this.setAcceleration(150, 0);
-                this.run.frameRate = this.speed*20;
-                this.play('run');
+                this.setAcceleration(Mole.ACCEL, 0);
+                this.moleanims[this.hits - 1].frameRate = this.speed*20;
+                this.play(Mole.ANIMS[this.hits-1]);
             }
         });
 
@@ -71,21 +105,21 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
             if (!this.gameOver){
                 if (!this.keyLEFT.isDown){
                     this.setAcceleration(0, 0);
-                    this.run.frameRate = this.speed*10;
+                    this.moleanims[this.hits - 1].frameRate = this.speed*10;
                 } else {
                     console.log("right is up!")
-                    this.setAcceleration(-150, 0);
-                    this.run.frameRate = this.speed*5;
+                    this.setAcceleration(-Mole.ACCEL, 0);
+                    this.moleanims[this.hits - 1].frameRate = this.speed*5;
                 }
-                this.play('run');
+                this.play(Mole.ANIMS[this.hits-1]);
             }
         });
 
         this.keyLEFT.on('down', (key) => {
             if (!this.gameOver){
-                this.setAcceleration(-150, 0);
-                this.run.frameRate = this.speed*5;
-                this.play('run');
+                this.setAcceleration(-Mole.ACCEL, 0);
+                this.moleanims[this.hits - 1].frameRate = this.speed*5;
+                this.play(Mole.ANIMS[this.hits-1]);
             }
         });
 
@@ -93,16 +127,18 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
             if (!this.gameOver){
                 if (!this.keyRIGHT.isDown){
                     this.setAcceleration(0, 0);
-                    this.run.frameRate = this.speed*10;
+                    this.moleanims[this.hits - 1].frameRate = this.speed*10;
                 } else {
-                    this.setAcceleration(150, 0);
-                    this.run.frameRate = this.speed*20;
+                    this.setAcceleration(Mole.ACCEL, 0);
+                    this.moleanims[this.hits - 1].frameRate = this.speed*20;
                 };
-                this.play('run');
+                this.play(Mole.ANIMS[this.hits-1]);
             }
         });
 
         //Invisible barriers are set in Play
+
+
     }
 
     update(){
@@ -179,15 +215,9 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         });
         
         this.transitions = [this.frontToBack, this.backToFront]
-
-
-        //var tmp = [this.centers[+this.plane], this.y, this.scale];
-
         
         console.log("Before start: ", this.transitions[+this.plane].data[0].start);
         console.log("Before end: ", this.transitions[+this.plane].data[0].end);
-        
-
         
         this.transitions[+this.plane].data[0].start = this.x;
         this.transitions[+this.plane].updateTo('x', this.x + 450);
