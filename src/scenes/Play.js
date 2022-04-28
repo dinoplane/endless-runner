@@ -162,7 +162,7 @@ class Play extends Phaser.Scene {
 
            // display score
     let scoreConfig = {
-        fontFamily: 'Courier',
+        fontFamily: 'mysoul',
         fontSize: '28px',
         backgroundColor: '#F3B141',
         color: '#843605',
@@ -267,6 +267,9 @@ class Play extends Phaser.Scene {
     }
 
     update(time, delta){
+        if (this.gameOver && Phaser.Input.Keyboard.JustDown(keySPACE))
+            this.scene.start("menuScene");
+
         if (!this.gameOver){
             this.cave_wall.tilePositionX += this.mole.speed;
             this.cave_front.tilePositionX += this.mole.speed;
