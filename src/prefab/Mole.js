@@ -56,7 +56,7 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         this.damageTimer = scene.time.addEvent({
             delay: 3000,
             callback: () => {
-                console.log("Im here")
+                //console.log("Im here")
                 this.damaged = false;
                 this.damageTimer.paused = true;
             },
@@ -113,9 +113,8 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         for (let c of Mole.CONTROL_CONFIG){
             for (let kc of c.keycodes){
                 var tmpKey = this.scene.input.keyboard.addKey(kc);
-                console.log("key", kc, c.keycodes)
+                //console.log("key", kc, c.keycodes)
                 tmpKey.on( 'down', (key) => {
-                    console.log("hallo")
                     this.onXDown(c.arg)
                 });
                 tmpKey.on('up', (key) => {
@@ -124,8 +123,6 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
                 this.controls.push(tmpKey);
             }
         }
-
-        console.log(this.controls)
 
         // this.keyRIGHT.on('down', (key) => {
         //     if (!this.gameOver){
@@ -198,7 +195,6 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
                 this.setAcceleration(0, 0);
                 this.moleanims[this.hits - 1].frameRate = this.speed*10;
             } else {
-                console.log("right is up!")
                 this.setAcceleration(-a, 0);
                 this.moleanims[this.hits - 1].frameRate = this.speed*5;
             }
@@ -207,7 +203,6 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
     }
 
     onXDown(a){
-        console.log("hello")
         if (!this.gameOver){
             this.setAcceleration(a, 0);
             this.moleanims[this.hits - 1].frameRate = this.speed*20;
@@ -283,15 +278,15 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         
         this.transitions = [this.frontToBack, this.backToFront]
         
-        console.log("Before start: ", this.transitions[+this.plane].data[0].start);
-        console.log("Before end: ", this.transitions[+this.plane].data[0].end);
+        // console.log("Before start: ", this.transitions[+this.plane].data[0].start);
+        // console.log("Before end: ", this.transitions[+this.plane].data[0].end);
         
         this.transitions[+this.plane].data[0].start = this.x;
         this.transitions[+this.plane].updateTo('x', this.x + 450);
 
-        console.log("After start: ", this.transitions[+this.plane].data[0].start);
+        // console.log("After start: ", this.transitions[+this.plane].data[0].start);
 
-        console.log("After end: ", this.transitions[+this.plane].data[0].end);
+        // console.log("After end: ", this.transitions[+this.plane].data[0].end);
         
         this.transitions[+this.plane].play();
     }

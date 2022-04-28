@@ -33,6 +33,8 @@ class Play extends Phaser.Scene {
         
         this.POSITIONS = [{x: game.config.width/4,       y: 2.7*game.config.height/4},
                           {x: 2.0*game.config.width/4,   y: 2.1*game.config.height/4}]
+
+        console.log(this.POSITIONS)
         this.SCALE = 0.6;
         this.WORLD_BOUNDS = {min: -game.config.width/2, max: 3*game.config.width}
 
@@ -56,7 +58,7 @@ class Play extends Phaser.Scene {
         this.mole = new Mole(this, this.POSITIONS[0].x, this.POSITIONS[0].y,
                                    this.POSITIONS[1].x, this.POSITIONS[1].y, 
                                    this.SCALE, 'molecart', 0).setDepth(7);
-        console.log("BATS");
+        //console.log("BATS");
         this.bat = new Bat(this, this.WORLD_BOUNDS.max, this.POSITIONS[0].y - 100, this.POSITIONS[1].y - 40, 1, 0)
                                    .setOrigin(0,0).setDepth(6);
         this.physics.add.overlap(this.mole, this.bat, (mole, bat) => {this.handleBats(mole, bat);});
@@ -70,13 +72,17 @@ class Play extends Phaser.Scene {
 
         // Create dynamic obstacles
         //Group of pits
-        this.pitGroup = this.add.group();
+        //this.pitGroup = this.add.group();
 
         // group with all active obstacles.
         this.obstacleGroup = this.add.group({
             // once a obstacle is removed, it's added to the pool
             removeCallback: function(obstacle){
+                console.log("DED %d: 1st %d, %f, %d, %d", obstacle.pit_num, obstacle.y, obstacle.scale, obstacle.depth, obstacle.plane);
+
                 obstacle.scene.obstaclePool.add(obstacle)
+                console.log("POOL ADDED %d: 1st %d, %f, %d, %d", obstacle.pit_num, obstacle.y, obstacle.scale, obstacle.depth, obstacle.plane);
+
             }
         });
  
@@ -84,11 +90,15 @@ class Play extends Phaser.Scene {
         this.obstaclePool = this.add.group({
             // once a obstacle is removed from the pool, it's added to the active obstacles group
             removeCallback: function(obstacle){
+                console.log("DED %d: 1st %d, %f, %d, %d", obstacle.pit_num, obstacle.y, obstacle.scale, obstacle.depth, obstacle.plane);
+
                 obstacle.scene.obstacleGroup.add(obstacle)
+                console.log("GROUP ADDED %d: 1st %d, %f, %d, %d", obstacle.pit_num, obstacle.y, obstacle.scale, obstacle.depth, obstacle.plane);
+
             }
         });
 
-        this.objectGroups = {pit: this.pitGroup}
+        //this.objectGroups = {pit: this.pitGroup}
 
         this.nextObstacleDistance = 0;
 
@@ -119,7 +129,7 @@ class Play extends Phaser.Scene {
 
         // this.nextObstacleDistance = 0;
 
-        this.physics.add.overlap(this.mole, this.gem, this.handleGems);
+        //this.physics.add.overlap(this.mole, this.gem, this.handleGems);
 
         this.physics.add.overlap(this.mole, this.gem, this.handleGems);
 
@@ -188,36 +198,57 @@ class Play extends Phaser.Scene {
     //Obstacle creation
     // the core of the script: obstacle are added from the pool or created on the fly
     addObstacle(obstacleWidth, posX, plane){
-        plane =  this.getRandomInt(2);
+        //plane =  this.getRandomInt(2);  //
+        console.log("Adding obstacle")
         let obstacle;
         if(this.obstaclePool.getLength()){
+            
             obstacle = this.obstaclePool.getFirst();
+            console.log("Pit %d: 1st %d, %f, %d, %d", obstacle.pit_num, obstacle.y, obstacle.scale, obstacle.depth, obstacle.plane);
+        console.log("1stC %d, %f, %d, %d", obstacle.cachedData.y, obstacle.cachedData.scale, obstacle.cachedData.depth, +!obstacle.plane);
+        
             obstacle.x = posX;
             obstacle.active = true;
             obstacle.visible = true;
             obstacle.refreshBody();
-            
+            console.log("Pit %d: 2nd %d, %f, %d, %d", obstacle.pit_num, obstacle.y, obstacle.scale, obstacle.depth, obstacle.plane);
+        console.log("2ndC %d, %f, %d, %d", obstacle.cachedData.y, obstacle.cachedData.scale, obstacle.cachedData.depth, +!obstacle.plane);
+        
             this.obstaclePool.remove(obstacle);
+            obstacle.setPlane(plane);
+            console.log("Pit %d: 3rd %d, %f, %d, %d", obstacle.pit_num, obstacle.y, obstacle.scale, obstacle.depth, obstacle.plane);
+        console.log("3rdC %d, %f, %d, %d", obstacle.cachedData.y, obstacle.cachedData.scale, obstacle.cachedData.depth, +!obstacle.plane);
+        
         }
         else{
-            obstacle = new Pit(this, posX, this.POSITIONS[plane].y, this.POSITIONS[+!plane].y, this.SCALE, plane);  
+            console.log("Plane", !plane)
+            obstacle = new Pit(this,
+                                 posX,
+                                  this.POSITIONS[0].y,
+                                   this.POSITIONS[1].y,
+                                    this.SCALE,
+                                     +plane);  
             //let s =  (game.config.height - obstacle.y) / obstacle.width;
             obstacle.setOrigin(0,0).refreshBody();
             this.obstacleGroup.add(obstacle);
         }
-        obstacle.plane = plane;
-        if (obstacle.plane == 0){
-            obstacle.y = this.POSITIONS[0].y;
-            obstacle.depth = 6;
-            obstacle.scale = 1;
-        }
-        else {
-            obstacle.y = this.POSITIONS[1].y;
-            obstacle.depth = 3;
-            obstacle.scale = this.SCALE;
-        }
+
+        console.log("Pit %d: FINAL %d, %f, %d, %d", obstacle.pit_num, obstacle.y, obstacle.scale, obstacle.depth, obstacle.plane);
+        console.log("CINAL %d, %f, %d, %d", obstacle.cachedData.y, obstacle.cachedData.scale, obstacle.cachedData.depth, +!obstacle.plane);
+        // obstacle.plane = plane;
+        // if (obstacle.plane == 0){
+        //     obstacle.y = this.POSITIONS[0].y;
+        //     obstacle.depth = 6;
+        //     obstacle.scale = 1;
+        // }
+        // else {
+        //     obstacle.y = this.POSITIONS[1].y;
+        //     obstacle.depth = 3;
+        //     obstacle.scale = this.SCALE;
+        // }
         obstacle.setVelocityX(this.mole.speed*-100);
         this.nextObstacleDistance = Phaser.Math.Between(gameOptions.spawnRange[0], gameOptions.spawnRange[1]);
+        return obstacle;
     }
 
     updateSpeed(){
@@ -234,13 +265,14 @@ class Play extends Phaser.Scene {
     handleBats(mole, bat){
         // The mole needs to be on the same plane, not switching and not damaged
         if (mole.switching & !mole.damaged){
-            console.log("Owww")
+            //console.log("Owww")
             mole.takeDamage();
             if (mole.hits == 0) this.onGameOver();
         }
     }
 
     handlePits(mole, pit){
+        console.log("%d I HIT %d, %f, %d, %d",pit.pit_num, pit.y, pit.scale, pit.depth, pit.plane);
         if (mole.plane == pit.plane && !mole.switching){
             this.onGameOver();
             
@@ -290,6 +322,7 @@ class Play extends Phaser.Scene {
             // recycling obstacles
             let minDistance = this.WORLD_BOUNDS.max;
             this.obstacleGroup.getChildren().forEach(function(obstacle){
+                if (obstacle.y == 518) console.log("WARNING Pit %d", obstacle.pit_num)
                 //obstacle.y = 486; // Gets  offset by 160 for some reason???
                 let obstacleDistance = this.WORLD_BOUNDS.max - obstacle.x - obstacle.displayWidth;
                 minDistance = Math.min(minDistance, obstacleDistance);
@@ -302,7 +335,9 @@ class Play extends Phaser.Scene {
             // adding new obstacles
             if(minDistance > this.nextObstacleDistance){
                 var nextObstacleWidth = Phaser.Math.Between(gameOptions.obstacleSizeRange[0], gameOptions.obstacleSizeRange[1]);
-                this.addObstacle(nextObstacleWidth, this.WORLD_BOUNDS.max, this.getRandomInt(2));
+                let obstacle = this.addObstacle(nextObstacleWidth, this.WORLD_BOUNDS.max, Phaser.Math.Between(0,1));
+                console.log("AFTER ADDING %d: 1st %d, %f, %d, %d", obstacle.pit_num, obstacle.y, obstacle.scale, obstacle.depth, obstacle.plane);
+
             }
             this.bat.update();
             highScore+=distance;
