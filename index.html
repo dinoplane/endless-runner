@@ -4,12 +4,20 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Placeholder Title</title>
+    <title>Mole Rush</title>
+    <link rel="preload" as="font" href="./assets/MySoul-Regular.ttf" type="font/ttf" />
     <style>
         body {
             background-color: beige;
         }
+        @font-face {
+            font-family: mysoul;
+            src: url('./assets/MySoul-Regular.ttf');
+        }
     </style>
+    
+   
+
 </head>
 <body>
     <script src = "./lib/phaser.js"></script>
@@ -18,6 +26,7 @@
     <script src = "./src/prefab/Pit.js"></script>
     <script src = "./src/prefab/Gem.js"></script>
     <script src = "./src/prefab/Bat.js"></script>
+    <script src = "./src/scenes/Load.js"></script>
     <script src = "./src/scenes/Menu.js"></script>
     <script src = "./src/scenes/Play.js"></script>
     <script src = "./src/main.js"></script>
