@@ -28,7 +28,7 @@ class Play extends Phaser.Scene {
         this.SCALE = 0.6;
         this.WORLD_BOUNDS = {min: -game.config.width/2, max: 3*game.config.width}
 
-        this.bgMusic = this.add.audio('bgMusic');
+        this.bgMusic = this.sound.add('bgMusic');
         this.bgMusic.loop = true;
         this.bgMusic.play();
 
@@ -110,6 +110,8 @@ class Play extends Phaser.Scene {
         // this.objectGroups = {pit: this.pitGroup}
 
         // this.nextObstacleDistance = 0;
+
+        this.physics.add.overlap(this.mole, this.gem, this.handleGems);
 
         this.physics.add.overlap(this.mole, this.gem, this.handleGems);
 
