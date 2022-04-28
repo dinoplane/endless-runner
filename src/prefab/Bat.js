@@ -1,4 +1,4 @@
-class Bat extends Gem{
+class Bat extends Gem { // SABELEYE
     static slots = [];
     
     constructor(scene, x, y, cy, scale, plane){

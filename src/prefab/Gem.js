@@ -1,7 +1,7 @@
-class Gem extends Enemy{ // What if a bat was a gemds
+class Gem extends Enemy{  
     static TYPES = [];
     
-    constructor(scene, x, y, cy, scale, texture, plane){
+    constructor(scene, x, y, cy, scale, texture, plane, value = 5000){
         console.log("I came here")
 
         if (texture == "") super(scene, x, y, cy, scale, 'gem', plane);
@@ -13,7 +13,7 @@ class Gem extends Enemy{ // What if a bat was a gemds
         //     callbackScope: this,
         //     loop: true
         // });
-        this.value = 5000;
+        this.value = value;
         this.refreshBody();
     }
 
