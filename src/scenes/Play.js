@@ -1,5 +1,9 @@
 class Play extends Phaser.Scene {
     static OBSTACLE_TYPE = ["pit", "bat"];
+
+    static GEM_VAL_TEXTURE = {2000 : "gem", 5000: "gem_red", 8000: "gem_grn"}; // Play.
+
+
     constructor(){
         super("playScene");
     }
@@ -7,7 +11,11 @@ class Play extends Phaser.Scene {
     preload(){
 
         this.load.image('cave_wall', './assets/background.png');
+
         this.load.image('gem', './assets/gem.png');
+        this.load.image('gem_red', './assets/gem_red.png');
+        this.load.image('gem_grn', './assets/gem_grn.png');
+
         this.load.image('cave_front', './assets/ground_front.png');
         this.load.image('cave_back', './assets/ground_back.png');
         this.load.image('i_wall', './assets/i_wall.png');

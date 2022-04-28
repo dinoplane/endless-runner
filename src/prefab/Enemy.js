@@ -32,7 +32,9 @@ class Enemy extends Phaser.Physics.Arcade.Sprite{
             this.cachedData.y = tmp[0];
             this.cachedData.scale = tmp[1];
             this.cachedData.depth = tmp[2];
+            console.log("I changed ", this.cachedData);
         }
+        console.log()
     } 
     
     onGameOver(){
