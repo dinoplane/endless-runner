@@ -241,6 +241,7 @@ class Play extends Phaser.Scene {
 
     onGameOver(){
         this.gameOver = true;
+        this.bgMusic.stop();
         this.mole.onGameOver();
         this.obstacleGroup.getChildren().forEach((obstacle) => {
             obstacle.onGameOver();

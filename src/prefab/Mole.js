@@ -6,6 +6,10 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
     static ACCEL = 700;
     static ANIMS = [ 'molenude_run', 'molehat_run', 'molecart_run']
 
+    static CONTROL_CONFIG = [{name: 'left', arg: -Mole.ACCEL, keycodes: [Phaser.Input.Keyboard.KeyCodes.A, Phaser.Input.Keyboard.KeyCodes.LEFT], },
+                       {name: 'right', arg: +Mole.ACCEL, keycodes: [Phaser.Input.Keyboard.KeyCodes.D, Phaser.Input.Keyboard.KeyCodes.RIGHT]}]
+
+
     constructor(scene, x, y, cx, cy, scale, texture, frame) {
         super(scene, x, y, texture, frame);
 
@@ -100,58 +104,77 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         
         this.setPushable(true).setDepth(3);
         
+        this.controls = [];
+
         this.keyRIGHT = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
         this.keyLEFT = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
 
         // Add other controls.
 
-        this.keyRIGHT.on('down', (key) => {
-            if (!this.gameOver){
-                this.setAcceleration(Mole.ACCEL, 0);
-                this.moleanims[this.hits - 1].frameRate = this.speed*20;
-                this.play(Mole.ANIMS[this.hits-1]);
+        for (let c of Mole.CONTROL_CONFIG){
+            for (let kc of c.keycodes){
+                var tmpKey = this.scene.input.keyboard.addKey(kc);
+                console.log("key", kc, c.keycodes)
+                tmpKey.on( 'down', (key) => {
+                    console.log("hallo")
+                    this.onXDown(c.arg)
+                });
+                tmpKey.on('up', (key) => {
+                    this.onXUp(c.arg);
+                });
+                this.controls.push(tmpKey);
             }
-        });
+        }
 
-        this.keyRIGHT.on('up', (key) => {
-            if (!this.gameOver){
-                if (!this.keyLEFT.isDown){
-                    this.setAcceleration(0, 0);
-                    this.moleanims[this.hits - 1].frameRate = this.speed*10;
-                } else {
-                    console.log("right is up!")
-                    this.setAcceleration(-Mole.ACCEL, 0);
-                    this.moleanims[this.hits - 1].frameRate = this.speed*5;
-                }
-                this.play(Mole.ANIMS[this.hits-1]);
-            }
-        });
+        console.log(this.controls)
 
-        this.keyLEFT.on('down', (key) => {
-            if (!this.gameOver){
-                //this.setVelocity(0, 0);
-                this.setAcceleration(-Mole.ACCEL*10, 0);
-                this.setMaxVelocity(550, 0);
-                this.moleanims[this.hits - 1].frameRate = this.speed*5;
-                this.play(Mole.ANIMS[this.hits-1]);
-            }
-        });
+        // this.keyRIGHT.on('down', (key) => {
+        //     if (!this.gameOver){
+        //         this.setAcceleration(Mole.ACCEL, 0);
+        //         this.moleanims[this.hits - 1].frameRate = this.speed*20;
+        //         this.play(Mole.ANIMS[this.hits-1]);
+        //     }
+        // });
 
-        this.keyLEFT.on('up', (key) => {
-            if (!this.gameOver){
-                if (!this.keyRIGHT.isDown){
-                    this.setAcceleration(0, 0);
-                    this.setMaxVelocity(300, 0);
-                    this.moleanims[this.hits - 1].frameRate = this.speed*10;
-                } else {
-                    this.setAcceleration(Mole.ACCEL, 0);
-                    this.setVelocity(0, 0);
-                    this.setMaxVelocity(300, 0);
-                    this.moleanims[this.hits - 1].frameRate = this.speed*20;
-                };
-                this.play(Mole.ANIMS[this.hits-1]);
-            }
-        });
+        // this.keyRIGHT.on('up', (key) => {
+        //     if (!this.gameOver){
+        //         if (!this.keyLEFT.isDown){
+        //             this.setAcceleration(0, 0);
+        //             this.moleanims[this.hits - 1].frameRate = this.speed*10;
+        //         } else {
+        //             console.log("right is up!")
+        //             this.setAcceleration(-Mole.ACCEL, 0);
+        //             this.moleanims[this.hits - 1].frameRate = this.speed*5;
+        //         }
+        //         this.play(Mole.ANIMS[this.hits-1]);
+        //     }
+        // });
+
+        // this.keyLEFT.on('down', (key) => {
+        //     if (!this.gameOver){
+        //         //this.setVelocity(0, 0);
+        //         this.setAcceleration(-Mole.ACCEL*10, 0);
+        //         this.setMaxVelocity(550, 0);
+        //         this.moleanims[this.hits - 1].frameRate = this.speed*5;
+        //         this.play(Mole.ANIMS[this.hits-1]);
+        //     }
+        // });
+
+        // this.keyLEFT.on('up', (key) => {
+        //     if (!this.gameOver){
+        //         if (!this.keyRIGHT.isDown){
+        //             this.setAcceleration(0, 0);
+        //             this.setMaxVelocity(300, 0);
+        //             this.moleanims[this.hits - 1].frameRate = this.speed*10;
+        //         } else {
+        //             this.setAcceleration(Mole.ACCEL, 0);
+        //             this.setVelocity(0, 0);
+        //             this.setMaxVelocity(300, 0);
+        //             this.moleanims[this.hits - 1].frameRate = this.speed*20;
+        //         };
+        //         this.play(Mole.ANIMS[this.hits-1]);
+        //     }
+        // });
 
         //Invisible barriers are set in Play
 
@@ -169,12 +192,28 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         this.scoreTimer.delay = 1000/this.speed;
         this.scene.updateSpeed();
     }
-    onXUp(){
 
+    onXUp(a){
+        if (!this.gameOver){
+            if (!this.keyLEFT.isDown){
+                this.setAcceleration(0, 0);
+                this.moleanims[this.hits - 1].frameRate = this.speed*10;
+            } else {
+                console.log("right is up!")
+                this.setAcceleration(-a, 0);
+                this.moleanims[this.hits - 1].frameRate = this.speed*5;
+            }
+            this.play(Mole.ANIMS[this.hits-1]);
+        }
     }
 
-    onXDown(){
-        
+    onXDown(a){
+        console.log("hello")
+        if (!this.gameOver){
+            this.setAcceleration(a, 0);
+            this.moleanims[this.hits - 1].frameRate = this.speed*20;
+            this.play(Mole.ANIMS[this.hits-1]);
+        }
     }
     
 
