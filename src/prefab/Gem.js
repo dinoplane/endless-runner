@@ -1,7 +1,7 @@
 class Gem extends Enemy{  
     static TYPES = [];
     
-    constructor(scene, x, y, cy, scale, texture, plane, value = 5000){
+    constructor(scene, x, y, cy, scale, texture, plane, value = 2000){
         console.log("I came here")
 
         if (texture == "") super(scene, x, y, cy, scale, 'gem', plane);

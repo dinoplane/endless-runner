@@ -225,7 +225,7 @@ class Play extends Phaser.Scene {
 
     handleBats(mole, bat){
         // The mole needs to be on the same plane, not switching and not damaged
-        if (mole.plane == bat.plane && !mole.switching & !mole.damaged){
+        if (mole.switching & !mole.damaged){
             console.log("Owww")
             mole.takeDamage();
             if (mole.hits == 0) this.onGameOver();
