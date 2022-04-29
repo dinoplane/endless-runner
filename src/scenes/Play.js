@@ -37,6 +37,10 @@ class Play extends Phaser.Scene {
         this.bgMusic.loop = true;
         this.bgMusic.play();
 
+        this.gemCollect = this.sound.add('gem_collect');
+        this.gameOverTone = this.sound.add('gameover')
+
+
         //this.physics.world.setBounds(this.WORLD_BOUNDS.min, 0, this.WORLD_BOUNDS.max, game.config.height);
         this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, highScore);
         this.scoreRight = this.add.text(game.config.width -2*(borderUISize - borderPadding), borderUISize + borderPadding*2, distance);
@@ -181,8 +185,9 @@ class Play extends Phaser.Scene {
     }
 
     onGameOver(){
+        this.gameOverTone.play();
         this.gameOver = true;
-        this.bgMusic.stop();
+        this.bgMusic.pause();
         this.mole.onGameOver();
         this.spawners.forEach((spawner) => {spawner.onGameOver()})
         this.bat.onGameOver();
@@ -190,6 +195,7 @@ class Play extends Phaser.Scene {
     
     handleGems(mole, gem){
         if (mole.plane == gem.plane){
+            this.gemCollect.play();
             mole.updateScore(gem.value);
             this.gemSpawner.obstacleGroup.killAndHide(gem);
             this.gemSpawner.obstacleGroup.remove(gem);

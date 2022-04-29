@@ -4,6 +4,8 @@ class Menu extends Phaser.Scene {
     }
     preload() {
         this.load.audio('bgMusic', './assets/mole_funk.mp3');
+        this.load.audio('gem_collect', './assets/gem_collect.wav')
+        this.load.audio('gameover', './assets/gameover.mp3')
     }
 
     create(){
@@ -12,7 +14,7 @@ class Menu extends Phaser.Scene {
             fontSize: '28px',
             backgroundColor: '#F3B141',
             color: '#843605',
-            align: 'ri  ght',
+            align: 'right',
             padding: {
               top: 5,
               bottom: 5,
