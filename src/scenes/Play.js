@@ -1,6 +1,5 @@
 class Play extends Phaser.Scene {
     static OBSTACLE_TYPE = ["pit", "bat"];
-    static GEM_VAL_TEXTURE = {2000 : "gem", 5000: "gem_red", 8000: "gem_grn"}; // Play.
 
     constructor(){
         super("playScene");
@@ -76,7 +75,7 @@ class Play extends Phaser.Scene {
                                                             this.SCALE);
         this.physics.add.overlap(this.mole, this.pitSpawner.obstacleGroup, (mole, pit) => {this.handlePits(mole, pit);});
 
-        this.gemSpawner = new Spawner(this, this.mole, Gem, game.config.width,
+        this.gemSpawner = new GemSpawner(this, this.mole, Gem, game.config.width/2,
                                                             this.WORLD_BOUNDS.max / 2,
                                                             this.POSITIONS[0].y,
                                                             this.POSITIONS[1].y,

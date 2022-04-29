@@ -27,4 +27,9 @@ class Gem extends Enemy{
         this.setVelocityX(0);
         //this.respawnTimer.paused = false;
     }
+
+    changeValue(texture, value){
+        this.setTexture(texture);
+        this.value = value;
+    }
 }
