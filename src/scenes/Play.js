@@ -95,21 +95,21 @@ class Play extends Phaser.Scene {
                         });
 
     //    // Debugging tool
-       var cursors = this.input.keyboard.createCursorKeys();
+    //    var cursors = this.input.keyboard.createCursorKeys();
 
-       var controlConfig = {
-            camera: this.cameras.main,
-            left: cursors.left,
-            right: cursors.right,
-            up: cursors.up,
-            down: cursors.down,
-            zoomIn: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q),
-            zoomOut: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E),
-            acceleration: 0.06,
-            drag: 0.0005,
-            maxSpeed: 1.0
-        };
-        controls = new Phaser.Cameras.Controls.SmoothedKeyControl(controlConfig);
+    //    var controlConfig = {
+    //         camera: this.cameras.main,
+    //         left: cursors.left,
+    //         right: cursors.right,
+    //         up: cursors.up,
+    //         down: cursors.down,
+    //         zoomIn: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q),
+    //         zoomOut: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E),
+    //         acceleration: 0.06,
+    //         drag: 0.0005,
+    //         maxSpeed: 1.0
+    //     };
+    //     controls = new Phaser.Cameras.Controls.SmoothedKeyControl(controlConfig);
 
         this.keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
 
@@ -215,7 +215,7 @@ class Play extends Phaser.Scene {
             this.cave_back.tilePositionX += this.mole.speed/2;
             this.mole.update();
             this.scoreLabel.text = this.mole.score;
-            controls.update(delta);
+            //controls.update(delta);
             distance++;
             //this.gemSpawner.nextObstacleDistance = 0; Gem Frenzy
 

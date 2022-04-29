@@ -233,15 +233,11 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         this.visible = false;
     }
 
-    tweenStart(){
-        //REmove Collision
-    }
-
     switchPlanes(){ // basically a swap for 3 values but using tweens.
         //Tweens
         this.frontToBack = this.scene.tweens.create({
             targets: this,
-            x: this.x + 100,
+            x: (this.x > game.config.width - 1.4*this.width) ? this.x + this.width*(1-this.scale): this.x + 100,
             y: this.cachedData.y,
             scale: this.cachedData.scale,
             duration: 250,
@@ -260,7 +256,7 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
 
         this.backToFront = this.scene.tweens.create({
             targets: this,
-            x: this.x - 100,
+            x: (this.x < this.width) ? this.x + this.width*(1-this.scale)/2: this.x - 100,
             y: this.origy,
             scale: 1,
             duration: 250,
