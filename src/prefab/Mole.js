@@ -17,7 +17,7 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         scene.physics.add.existing(this);
 
         this.cachedData= {x: cx, y:cy, scale: scale}
-    
+
         this.origy = y;
         this.depth = 7;
         this.speed = 10;
@@ -171,7 +171,8 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         if (this.hits == 0){
             this.onGameOver();
         } else {
-            this.crementSpeed(-this.speed/3);
+            this.crementSpeed(-this.speed/4);
+            this.body.setSize(this.width*3/5, this.height, true);
             this.damageTimer.paused = false;
             console.log("Hits left: ", this.hits)
             this.play(Mole.ANIMS[this.hits-1]);
