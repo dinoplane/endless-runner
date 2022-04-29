@@ -50,7 +50,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite{
     } 
     
     onGameOver(){
-        this.setVelocity(0);
+        this.setVelocityX(0);
         this.anims.stop();
     }
 }

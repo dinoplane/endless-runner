@@ -1,5 +1,4 @@
 class Spawner{
-
     static nextObstacleDistance = 0;
     constructor(scene, mole, type, spawnMin, ...args){
         this.scene = scene;
@@ -29,6 +28,7 @@ class Spawner{
         // group with all active obstacles.
         this.obstacleGroup = this.scene.add.group({
             // once a obstacle is removed, it's added to the pool
+
             removeCallback: (obstacle) => {
                 //// console.log("DED %d: 1st %d, %f, %d, %d", obstacle.pit_num, obstacle.y, obstacle.scale, obstacle.depth, obstacle.plane);
                 this.obstaclePool.add(obstacle)
@@ -40,6 +40,7 @@ class Spawner{
         // pool
         this.obstaclePool = this.scene.add.group({
             // once a obstacle is removed from the pool, it's added to the active obstacles group
+
             removeCallback: (obstacle) => {
                 //// console.log("DED %d: 1st %d, %f, %d, %d", obstacle.pit_num, obstacle.y, obstacle.scale, obstacle.depth, obstacle.plane);
 
@@ -61,7 +62,7 @@ class Spawner{
             obstacle = this.obstaclePool.getFirst();
             // console.log("Pit %d: 1st %d, %f, %d, %d", obstacle.pit_num, obstacle.y, obstacle.scale, obstacle.depth, obstacle.plane);
         // console.log("1stC %d, %f, %d, %d", obstacle.cachedData.y, obstacle.cachedData.scale, obstacle.cachedData.depth, +!obstacle.plane);
-        
+            console.log(obstacle)
             obstacle.x = posX;
             obstacle.active = true;
             obstacle.visible = true;
@@ -87,11 +88,11 @@ class Spawner{
         // console.log("CINAL %d, %f, %d, %d", obstacle.cachedData.y, obstacle.cachedData.scale, obstacle.cachedData.depth, +!obstacle.plane);
         obstacle.plane = plane;
         if (obstacle.plane == 0){
-            obstacle.depth = 6;
+            //obstacle.depth = 6;
             obstacle.scale = 1;
             obstacle.y = this.POSITIONS[0].y;
         } else {
-            obstacle.depth = 3;
+            //obstacle.depth = 3;
             obstacle.scale = this.SCALE;
             obstacle.y = this.POSITIONS[1].y;
         }
@@ -116,14 +117,22 @@ class Spawner{
     update(){
             // recycling obstacles
             let minDistance = this.spawnMax;
+            
             this.obstacleGroup.getChildren().forEach(function(obstacle){
                 //obstacle.y = 486; // Gets  offset by 160 for some reason???
                 let obstacleDistance = this.spawnMax - obstacle.x - obstacle.displayWidth;
                 minDistance = Math.min(minDistance, obstacleDistance);
+                obstacle.y = this.POSITIONS[+obstacle.plane].y; 
                 if(obstacle.x < - obstacle.displayWidth){
                     this.obstacleGroup.killAndHide(obstacle);
                     this.obstacleGroup.remove(obstacle);
                 }
+                // if (obstacle.y < (this.POSITIONS[1].y)) {
+                //     console.log("Too high 0");
+                // }
+                // if (obstacle.y > (this.POSITIONS[0].y)) {
+                //     console.log("Too low 0");
+                // }
             }, this);
             // adding new obstacles
             if(minDistance > this.nextObstacleDistance && !this.cooldown){
@@ -131,7 +140,7 @@ class Spawner{
                 this.cooldown = true;
                 this.cooldownTimer.paused = false;
                 let obstacle = this.addObstacle(this.spawnMax);
-                // console.log("AFTER ADDING %d: 1st %d, %f, %d, %d", obstacle.pit_num, obstacle.y, obstacle.scale, obstacle.depth, obstacle.plane);
+                console.log("AFTER ADDING : 1st %d, %f, %d, %d", obstacle.y, obstacle.scale, obstacle.depth, obstacle.plane);
             }
     }
 

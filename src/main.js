@@ -7,7 +7,7 @@ var config = {
     physics: {
       default: 'arcade',
       arcade: {
-           debug: true
+           debug: false
       }
     }
   }
@@ -26,7 +26,7 @@ let gameOptions = {
   jumps: 2
 }
 
-var game = new Phaser.Game(config);
+let game = new Phaser.Game(config);
 let borderUISize = game.config.height / 15;
 let borderPadding = borderUISize / 3;
 

@@ -22,5 +22,6 @@ class GemSpawner extends Spawner {
         let i = Phaser.Math.Between(0, GemSpawner.GEM_VAL_TEXTURE.length-1)
         console.log(GemSpawner.GEM_VAL_TEXTURE.length, GemSpawner.GEM_VAL_TEXTURE[i]);
         gem.changeValue(GemSpawner.GEM_VAL_TEXTURE[i][1], GemSpawner.GEM_VAL_TEXTURE[i][0]);
+        return gem;
     }
 }
