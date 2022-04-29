@@ -8,6 +8,9 @@ class Pit extends Enemy{
 
         this.pit_num = Pit.NUM_PITS;
         Pit.NUM_PITS += 1;
+
+        this.body.setSize(this.width - 50, this.height, true);
+
         console.log("Pit", this.pit_num)
         console.log("After %d, %f, %d, %d", this.y, this.scale, this.depth, this.plane);
         console.log("After %d, %f, %d, %d", this.cachedData.y, this.cachedData.scale, this.cachedData.depth, +!this.plane);

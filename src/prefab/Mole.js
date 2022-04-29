@@ -47,7 +47,7 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         this.speedTimer = scene.time.addEvent({
             delay: 30000,
             callback: () => {
-                this.crementSpeed(2);
+                this.crementSpeed(1);
             },
             callbackScope: this,
             loop: true
@@ -227,6 +227,9 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
 
     onGameOver(){
         this.gameOver = true;
+        this.speedTimer.paused = true;
+        this.damageTimer.paused = true;
+        this.scoreTimer.paused = true;
         this.visible = false;
     }
 
