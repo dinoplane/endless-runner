@@ -87,14 +87,13 @@ class Spawner{
         // console.log("CINAL %d, %f, %d, %d", obstacle.cachedData.y, obstacle.cachedData.scale, obstacle.cachedData.depth, +!obstacle.plane);
         obstacle.plane = plane;
         if (obstacle.plane == 0){
-            obstacle.y = this.POSITIONS[0].y;
             obstacle.depth = 6;
             obstacle.scale = 1;
-        }
-        else {
-            obstacle.y = this.POSITIONS[1].y;
+            obstacle.y = this.POSITIONS[0].y;
+        } else {
             obstacle.depth = 3;
             obstacle.scale = this.SCALE;
+            obstacle.y = this.POSITIONS[1].y;
         }
         obstacle.setVelocityX(this.mole.speed*-100);
         this.nextObstacleDistance = Phaser.Math.Between(this.spawnMin, this.spawnMax);

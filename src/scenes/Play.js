@@ -37,7 +37,7 @@ class Play extends Phaser.Scene {
         this.bgMusic.loop = true;
         this.bgMusic.play();
 
-        this.physics.world.setBounds(this.WORLD_BOUNDS.min, 0, this.WORLD_BOUNDS.max, game.config.height);
+        //this.physics.world.setBounds(this.WORLD_BOUNDS.min, 0, this.WORLD_BOUNDS.max, game.config.height);
         this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, highScore);
         this.scoreRight = this.add.text(game.config.width -2*(borderUISize - borderPadding), borderUISize + borderPadding*2, distance);
 
@@ -68,7 +68,7 @@ class Play extends Phaser.Scene {
         console.log("Toot");
 
 
-        this.pitSpawner = new Spawner(this, this.mole, Pit, game.config.width*2,
+        this.pitSpawner = new Spawner(this, this.mole, Pit, game.config.width,
                                                             this.WORLD_BOUNDS.max,
                                                             this.POSITIONS[0].y,
                                                             this.POSITIONS[1].y,
@@ -93,22 +93,22 @@ class Play extends Phaser.Scene {
                                     this.gemSpawner.obstacleGroup.remove(gem);
                         });
 
-    //    // Debugging tool
-    //    var cursors = this.input.keyboard.createCursorKeys();
+       // Debugging tool
+       var cursors = this.input.keyboard.createCursorKeys();
 
-    //    var controlConfig = {
-    //         camera: this.cameras.main,
-    //         left: cursors.left,
-    //         right: cursors.right,
-    //         up: cursors.up,
-    //         down: cursors.down,
-    //         zoomIn: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q),
-    //         zoomOut: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E),
-    //         acceleration: 0.06,
-    //         drag: 0.0005,
-    //         maxSpeed: 1.0
-    //     };
-    //     controls = new Phaser.Cameras.Controls.SmoothedKeyControl(controlConfig);
+       var controlConfig = {
+            camera: this.cameras.main,
+            left: cursors.left,
+            right: cursors.right,
+            up: cursors.up,
+            down: cursors.down,
+            zoomIn: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q),
+            zoomOut: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E),
+            acceleration: 0.06,
+            drag: 0.0005,
+            maxSpeed: 1.0
+        };
+        controls = new Phaser.Cameras.Controls.SmoothedKeyControl(controlConfig);
 
         this.keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
 
@@ -159,9 +159,9 @@ class Play extends Phaser.Scene {
     }
 
     // Collision Callbacks
-    onWorldBounds(body){
-        body.gameObject.reset();
-    }
+    // onWorldBounds(body){
+    //     body.gameObject.reset();
+    // }
 
     handleBats(mole, bat){
         // The mole needs to be on the same plane, not switching and not damaged
@@ -191,7 +191,8 @@ class Play extends Phaser.Scene {
     handleGems(mole, gem){
         if (mole.plane == gem.plane){
             mole.updateScore(gem.value);
-            gem.reset();
+            this.gemSpawner.obstacleGroup.killAndHide(gem);
+            this.gemSpawner.obstacleGroup.remove(gem);
         }
     }
 
@@ -214,9 +215,9 @@ class Play extends Phaser.Scene {
             this.cave_back.tilePositionX += this.mole.speed/2;
             this.mole.update();
             this.scoreLabel.text = this.mole.score;
-            //controls.update(delta);
+            controls.update(delta);
             distance++;
-            //this.gemSpawner.nextObstacleDistance = 0; Gem Frenzy
+            this.gemSpawner.nextObstacleDistance = 0; //Gem Frenzy
 
             this.spawners.forEach((spawner) => {spawner.update()})
             this.bat.update();
