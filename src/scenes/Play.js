@@ -15,7 +15,7 @@ class Play extends Phaser.Scene {
         this.load.image('purplestones', './assets/purplestones.png');
         this.load.image('stones', './assets/stones.png');
         
-        this.load.image('cave_front', './assets/ground_front.png');
+        this.front_asset = this.load.image('cave_front', './assets/ground_front.png');
         this.load.image('cave_back', './assets/ground_back.png');
         this.load.image('i_wall', './assets/i_wall.png');
         this.pitasset = this.load.image('pit', './assets/pit.png');
@@ -69,7 +69,7 @@ class Play extends Phaser.Scene {
         this.cave_back = this.add.tileSprite(0, this.POSITIONS[1].y - 10, game.config.width, 2.7*game.config.height/4, 'cave_back')
                                 .setOrigin(0,0).setDepth(1);
         this.cave_front = this.add.tileSprite(0, this.POSITIONS[0].y - 10, game.config.width, 2.7*game.config.height/4, 'cave_front')
-                                .setOrigin(0,0).setDepth(5);
+                                .setOrigin(0,0).setDepth(5).setDisplaySize();
 
         this.mole = new Mole(this, this.POSITIONS[0].x, this.POSITIONS[0].y,
                                    this.POSITIONS[1].x, this.POSITIONS[1].y, 
