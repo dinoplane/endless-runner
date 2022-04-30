@@ -242,7 +242,7 @@ class Play extends Phaser.Scene {
             
             this.cave_front.tilePositionX += this.mole.speed;
             this.cave_back.tilePositionX += this.mole.speed/2;
-            this.mole.update();
+            //this.mole.update();
             this.scoreLabel.text = this.mole.score;
             //controls.update(delta);
             distance++;

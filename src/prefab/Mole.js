@@ -46,7 +46,7 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
 
 
         this.speedTimer = scene.time.addEvent({
-            delay: 10000,
+            delay: 20000,
             callback: () => {
                 this.crementSpeed(1);
             },
