@@ -33,6 +33,7 @@ class Play extends Phaser.Scene {
     create(){
         this.gameOver = false;
         this.ended=false;
+        this.goneFar=false;
         this.POSITIONS = [{x: Math.round(game.config.width/4),       y: Math.round(2.7*game.config.height/4 + 10)},
                           {x: Math.round(2.0*game.config.width/4),   y: Math.round(2.1*game.config.height/4) + 10}]
 
@@ -45,7 +46,7 @@ class Play extends Phaser.Scene {
         this.bgMusic.play();
 
         this.gemCollect = this.sound.add('gem_collect');
-        this.gameOverTone = this.sound.add('gameover');
+        this.gameOverTone = this.sound.add('gameover', {volume: 0.3});
 
         // this.particleManager = this.add.particles('texture_key')
         // this.particleSystem = this.particleManager.createEmitter({})
@@ -132,9 +133,11 @@ class Play extends Phaser.Scene {
         this.keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
 
         this.keyR.on('down', (key) => {
-           if (this.gameOver) 
-                this.scene.restart();
+           if (this.gameOver) {
+               this.goneFar=false;
                 this.ended=false;
+                this.scene.restart();
+           }
         }); 
         // this.keyT.on('down', (key) => {
         //     if (this.gameOver) 
@@ -157,7 +160,7 @@ class Play extends Phaser.Scene {
 
            // display score
     let scoreConfig = {
-        fontFamily: 'mysoul',
+        fontFamily: 'Courier',
         fontSize: '28px',
         backgroundColor: '#F3B141',
         color: '#843605',
@@ -249,12 +252,17 @@ class Play extends Phaser.Scene {
             highScore+=distance;
             this.scoreLeft.text=highScore;
             this.scoreRight.text=distance;
+            
+            if(!this.goneFar&&distance>=2000){
+                this.gemSpawner.updateOdds(1,3,5);
+                this.goneFar=true;
+            }
         }else if(this.ended==false){
             //play death animation
             //stop all actions
             this.ended=true;
             this.add.text(game.config.width/2, game.config.height/2 + 64, 'Game Over').setOrigin(0.5).setDepth(10);;
-            this.add.text(game.config.width/2, game.config.height/2 + 96, 'Press (R) to Restart or ← for Menu').setOrigin(0.5).setDepth(10);
+            this.add.text(game.config.width/2, game.config.height/2 + 96, 'Press (R) to Restart').setOrigin(0.5).setDepth(10);
         // }else{
         //     if(Phaser.Input.Keyboard.JustDown(keyLEFT)){
         //         //maybe store a high score
