@@ -69,9 +69,10 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         // Animations
         let molecart_run = this.anims.create({
             key: 'molecart_run',
-            frames:  this.anims.generateFrameNumbers('mole_atlas', { 
-                prefix: 'molecart-', 
-                start: 1, 
+            defaultTextureKey: 'mole_atlas',
+            frames:  this.anims.generateFrameNames('mole_atlas', { 
+                prefix: 'molecart', 
+                start: 0, 
                 end: 8, 
                 suffix: '',
                 zeroPad: 4,
@@ -82,11 +83,12 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         });
 
         let molehat_run = this.anims.create({
-            key: 'molehat_run-',
-            frames:  this.anims.generateFrameNumbers('mole_atlas', { 
-                prefix: 'molehat-',
-                start: 1, 
-                end: 8, 
+            key: 'molehat_run',
+            defaultTextureKey: 'mole_atlas',
+            frames:  this.anims.generateFrameNames('mole_atlas', { 
+                prefix: 'molehat',
+                start: 0, 
+                end: 10, 
                 suffix: '',
                 zeroPad: 4,
                 
@@ -97,10 +99,11 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
 
         let molenude_run = this.anims.create({
             key: 'molenude_run',
-            frames:  this.anims.generateFrameNumbers('mole_atlas', { 
-                prefix: 'molenude-',
-                start: 1, 
-                end: 8, 
+            defaultTextureKey: 'mole_atlas',
+            frames:  this.anims.generateFrameNames('mole_atlas', { 
+                prefix: 'molenude',
+                start: 0, 
+                end: 10, 
                 suffix: '',
                 zeroPad: 4,
                 

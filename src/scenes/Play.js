@@ -63,9 +63,6 @@ class Play extends Phaser.Scene {
                                 .setOrigin(0, 0).setDepth(0);
         this.cave_wall2 = this.add.tileSprite(0, 0, game.config.width, game.config.height, 'stones')
                                 .setOrigin(0, 0).setDepth(0);
-
-
-
         this.cave_back = this.add.tileSprite(0, this.POSITIONS[1].y - 10, game.config.width, 128, 'cave_back')
                                 .setOrigin(0,0).setDepth(1);
         this.cave_front = this.add.tileSprite(0, this.POSITIONS[0].y - 10, game.config.width, 128, 'cave_front')
@@ -73,9 +70,10 @@ class Play extends Phaser.Scene {
                                 this.cave_front.setScale((game.config.height - this.cave_front.y)/this.cave_front.height);
         
                                 console.log();
+
         this.mole = new Mole(this, this.POSITIONS[0].x, this.POSITIONS[0].y,
                                    this.POSITIONS[1].x, this.POSITIONS[1].y, 
-                                   this.SCALE, 'mole_atlas', 'molecart-0000').setDepth(7);
+                                   this.SCALE, 'mole_atlas', 'molecart0000').setDepth(7);
 
                                    console.log("TATA");
 
