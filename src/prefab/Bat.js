@@ -42,4 +42,8 @@ class Bat extends Gem { // SABELEYE
         this.respawnTimer.paused = false;
     }
 
+    onGameOver(){
+        this.respawnTimer.paused = false;
+        super.onGameOver();
+    }
 }

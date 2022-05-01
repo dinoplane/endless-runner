@@ -5,7 +5,7 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
     static MAX_OFFSET = 150;
     static ACCEL = 700;
     static ANIMS = [ 'molenude_run', 'molehat_run', 'molecart_run']
-    static FR_MULT = [1, 2, 10];
+    static FR_MULT = [3, 5, 10];
 
     static CONTROL_CONFIG = [{name: 'left', arg: -Mole.ACCEL, keycodes: [Phaser.Input.Keyboard.KeyCodes.A, Phaser.Input.Keyboard.KeyCodes.LEFT], },
                        {name: 'right', arg: +Mole.ACCEL, keycodes: [Phaser.Input.Keyboard.KeyCodes.D, Phaser.Input.Keyboard.KeyCodes.RIGHT]}]
@@ -30,6 +30,10 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         this.switching = false;
         this.damaged = false;
 
+        this.hitHurt = scene.sound.add('hit_hurt');
+        this.boom = scene.sound.add('boom');
+        this.audiotracks = [this.hitHurt, this.boom];
+
         this.setMaxVelocity(300, 0);
         this.setDrag(300);
         
@@ -46,7 +50,7 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
 
 
         this.speedTimer = scene.time.addEvent({
-            delay: 20000,
+            delay: 10000,
             callback: () => {
                 this.crementSpeed(1);
             },
@@ -122,8 +126,7 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
                 suffix: '',
                 zeroPad: 4,
             }),
-            frameRate: 1,
-            repeat: -1
+            frameRate: 8,
         });
 
         this.moleanims = [molenude_run, molehat_run, molecart_run]
@@ -208,9 +211,8 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         this.hits -= 1;
         this.damaged = true;
 
-        if (this.hits == 0){
-            this.onGameOver();
-        } else {
+        if (this.hits > 0){
+            this.hitHurt.play();
             this.crementSpeed(-this.speed/4);
             this.body.setSize(this.width*3/5, this.height, true);
             this.damageTimer.paused = false;
@@ -220,11 +222,20 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
 
     onGameOver(){
         this.anims.play('mole_ded');
+        this.boom.play();
+        this.setMaxVelocity(0);
+        this.on('animationcomplete', () => {    // callback after anim completes
+            this.visible = false;
+        });
         this.gameOver = true;
         this.speedTimer.paused = true;
         this.damageTimer.paused = true;
         this.scoreTimer.paused = true;
-        //this.visible = false;
+
+    }
+
+    stopAudio(){
+        this.audiotracks.forEach((sound) => {sound.stop();})
     }
 
     switchPlanes(){ // basically a swap for 3 values but using tweens.

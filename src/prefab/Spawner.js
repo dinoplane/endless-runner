@@ -77,15 +77,15 @@ class Spawner{
         obstacle.plane = plane;
         if (obstacle.plane == 0){
             obstacle.scale = 1;
-            obstacle.y = this.POSITIONS[0].y+20;
+            obstacle.y = this.POSITIONS[0];
             obstacle.setVelocityX(this.mole.speed*-100);
         } else {
             obstacle.scale = this.SCALE;
-            obstacle.y = this.POSITIONS[1].y+10;
+            obstacle.y = this.POSITIONS[1];
             obstacle.setVelocityX(this.mole.speed*-70);
         }
         
-        this.nextObstacleDistance = Phaser.Math.Between(this.spawnMin, this.spawnMax);
+        this.nextObstacleDistance = 50;//Phaser.Math.Between(this.spawnMin, this.spawnMax);
         return obstacle;
     }
 
@@ -109,6 +109,7 @@ class Spawner{
             this.obstacleGroup.getChildren().forEach(function(obstacle){
                 let obstacleDistance = this.spawnMax - obstacle.x - obstacle.displayWidth;
                 minDistance = Math.min(minDistance, obstacleDistance);
+                console.log("ObDistance: %d, Min Distance: %d", obstacleDistance, minDistance);
                 obstacle.y = this.POSITIONS[+obstacle.plane]; 
                 if(obstacle.x < - obstacle.displayWidth){
                     this.obstacleGroup.killAndHide(obstacle);

@@ -22,9 +22,9 @@ class Play extends Phaser.Scene {
         this.bgMusic = this.sound.add('bgMusic');
         this.bgMusic.loop = true;
         this.bgMusic.play();
-
         this.gemCollect = this.sound.add('gem_collect');
         this.gameOverTone = this.sound.add('gameover', {volume: 0.3});
+        this.audiotracks = [this.bgMusic, this.gemCollect, this.gameOverTone]
 
         // this.particleManager = this.add.particles('texture_key')
         // this.particleSystem = this.particleManager.createEmitter({})
@@ -54,6 +54,9 @@ class Play extends Phaser.Scene {
 
         this.tracks_front = this.add.image(0, this.POSITIONS[0].y+20, 'tracks').setOrigin(0,0).setDepth(5);
 
+        this.gameOverPrompt = this.add.image(game.config.width/2, game.config.height/2, 'gameoverprompt')
+                                .setDepth(10).setVisible(false);
+
 
         this.mole = new Mole(this, this.POSITIONS[0].x, this.POSITIONS[0].y + 10,
                                    this.POSITIONS[1].x, this.POSITIONS[1].y, 
@@ -72,7 +75,7 @@ class Play extends Phaser.Scene {
         this.pitSpawner = new Spawner(this, this.mole, Pit, game.config.width,
                                                             this.WORLD_BOUNDS.max / 2,
                                                             this.POSITIONS[0].y+25,
-                                                            this.POSITIONS[1].y,
+                                                            this.POSITIONS[1].y+10,
                                                             this.SCALE);
         this.physics.add.overlap(this.mole, this.pitSpawner.obstacleGroup, (mole, pit) => {this.handlePits(mole, pit);});
 
@@ -95,27 +98,23 @@ class Play extends Phaser.Scene {
                         });
 
        // Debugging tool
-    //    var cursors = this.input.keyboard.createCursorKeys();
-
-    //    var controlConfig = {
-    //         camera: this.cameras.main,
-    //         left: cursors.left,
-    //         right: cursors.right,
-    //         up: cursors.up,
-    //         down: cursors.down,
-    //         zoomIn: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q),
-    //         zoomOut: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E),
-    //         acceleration: 0.06,
-    //         drag: 0.0005,
-    //         maxSpeed: 1.0
-    //     };
-    //     controls = new Phaser.Cameras.Controls.SmoothedKeyControl(controlConfig);
+       var controlConfig = {
+            camera: this.cameras.main,
+            zoomIn: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q),
+            zoomOut: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E),
+            acceleration: 0.06,
+            drag: 0.0005,
+            maxSpeed: 1.0
+        };
+        controls = new Phaser.Cameras.Controls.SmoothedKeyControl(controlConfig);
 
         this.keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
 
         this.keyR.on('down', (key) => {
            if (this.gameOver) {
-               this.goneFar=false;
+                this.audiotracks.forEach((sound) => {sound.stop();})
+                this.mole.stopAudio();
+                this.goneFar=false;
                 this.ended=false;
                 this.gemSpawner.updateOdds();
                 distance=0;
@@ -186,6 +185,7 @@ class Play extends Phaser.Scene {
     onGameOver(){
         if (!this.gameOver){
             this.gameOver = true;
+            this.gameOverPrompt.setVisible(true);
             this.bgMusic.pause();
             this.gameOverTone.play();
             this.mole.onGameOver();
@@ -212,7 +212,7 @@ class Play extends Phaser.Scene {
         mole.setDrag(0);
     }
 
-    update(){
+    update(time, delta){
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keySPACE))
             this.scene.start("menuScene");
 
@@ -227,9 +227,9 @@ class Play extends Phaser.Scene {
             
             //this.mole.update();
             this.scoreLabel.text = this.mole.score;
-            //controls.update(delta);
+            controls.update(delta);
             distance++;
-            //this.gemSpawner.nextObstacleDistance = 0; Gem Frenzy
+            //this.gemSpawner.nextObstacleDistance = 50; //Gem Frenzy
 
             this.spawners.forEach((spawner) => {spawner.update()})
             this.bat.update();
@@ -245,9 +245,9 @@ class Play extends Phaser.Scene {
         }else if(this.ended==false){
             //play death animation
             //stop all actions
-            this.ended=true;
-            this.add.text(game.config.width/2, game.config.height/2 + 64, 'Game Over').setOrigin(0.5).setDepth(10);;
-            this.add.text(game.config.width/2, game.config.height/2 + 96, 'Press (R) to Restart').setOrigin(0.5).setDepth(10);
+            this.ended=true; // oh yea im doing this via call backs
+            //this.add.text(game.config.width/2, game.config.height/2 + 64, 'Game Over').setOrigin(0.5).setDepth(10);;
+            //this.add.text(game.config.width/2, game.config.height/2 + 96, 'Press (R) to Restart').setOrigin(0.5).setDepth(10);
         // }else{
         //     if(Phaser.Input.Keyboard.JustDown(keyLEFT)){
         //         //maybe store a high score
