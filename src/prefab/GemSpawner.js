@@ -34,7 +34,7 @@ class GemSpawner extends Spawner {
         }else if(tempNum>=GemSpawner.GEM_ODDS[0]){
             i=0;
         }}
-        console.log(GemSpawner.GEM_VAL_TEXTURE.length, GemSpawner.GEM_VAL_TEXTURE[i]);
+        //console.log(GemSpawner.GEM_VAL_TEXTURE.length, GemSpawner.GEM_VAL_TEXTURE[i]);
         gem.changeValue(GemSpawner.GEM_VAL_TEXTURE[i][1], GemSpawner.GEM_VAL_TEXTURE[i][0]);
         return gem;
     }

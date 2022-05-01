@@ -7,26 +7,6 @@ class Play extends Phaser.Scene {
 
     preload(){
 
-        this.load.image('gem', './assets/gem.png');
-        this.load.image('gem_red', './assets/gem_red.png');
-        this.load.image('gem_grn', './assets/gem_grn.png');
-
-        this.load.image('cave_wall', './assets/background.png');
-        this.load.image('purplestones', './assets/purplestones.png');
-        this.load.image('stones', './assets/stones.png');
-        
-        this.load.image('cave_front', './assets/ground_front.png');
-        this.load.image('cave_back', './assets/ground_back.png');
-        this.load.image('i_wall', './assets/i_wall.png');
-        this.load.image('pit', './assets/pit.png');
-
-        this.load.image('b0', './assets/brake_particle0.png');
-        this.load.image('b1', './assets/brake_particle1.png');
-        this.load.image('b2', './assets/brake_particle2.png');
-
-        this.load.atlas('mole_atlas', './assets/mole_atlas.png', './assets/mole_atlas.json');
-
-        this.load.spritesheet('bat', './assets/bat.png', {frameWidth: 128, frameHeight: 64, startFrame: 0, endFrame: 6});
     }
 
     create(){
@@ -36,7 +16,6 @@ class Play extends Phaser.Scene {
         this.POSITIONS = [{x: Math.round(game.config.width/4),       y: Math.round(2.7*game.config.height/4+10)},
                           {x: Math.round(2.0*game.config.width/4),   y: Math.round(2.1*game.config.height/4+10)}]
 
-        console.log(this.POSITIONS)
         this.SCALE = 0.6;
         this.WORLD_BOUNDS = {min: Math.round(-game.config.width/2), max: Math.round(3*game.config.width)}
 
@@ -65,31 +44,34 @@ class Play extends Phaser.Scene {
                                 .setOrigin(0, 0).setDepth(0);
         this.cave_back = this.add.tileSprite(0, this.POSITIONS[1].y - 10, game.config.width, 128, 'cave_back')
                                 .setOrigin(0,0).setDepth(1);
+
+        this.tracks_back = this.add.image(0, this.POSITIONS[1].y +10, 'tracks').setOrigin(0,0).setDepth(1).
+                                                            setDisplaySize(game.config.width, 32).setTint(0xffffff);
+
         this.cave_front = this.add.tileSprite(0, this.POSITIONS[0].y - 10, game.config.width, 128, 'cave_front')
                                 .setOrigin(0,0).setDepth(5);
                                 this.cave_front.setScale((game.config.height - this.cave_front.y)/this.cave_front.height);
-        
-                                console.log();
 
-        this.mole = new Mole(this, this.POSITIONS[0].x, this.POSITIONS[0].y,
+        this.tracks_front = this.add.image(0, this.POSITIONS[0].y+20, 'tracks').setOrigin(0,0).setDepth(5);
+
+
+        this.mole = new Mole(this, this.POSITIONS[0].x, this.POSITIONS[0].y + 10,
                                    this.POSITIONS[1].x, this.POSITIONS[1].y, 
                                    this.SCALE, 'mole_atlas', 'molecart0000').setDepth(7);
-
-                                   console.log("TATA");
 
         this.bat = new Bat(this, this.WORLD_BOUNDS.max, this.POSITIONS[0].y - 100, this.POSITIONS[1].y - 40, 1, 0)
                                    .setOrigin(0,0).setDepth(6);
         this.physics.add.overlap(this.mole, this.bat, (mole, bat) => {this.handleBats(mole, bat);});
                                    
-        //Invisble barriers for mole
+        //Invisible barriers for mole
         let i_walls = this.physics.add.staticGroup();
         let mole_bounds = [borderUISize, game.config.width-borderUISize];
         for (let pos of mole_bounds) i_walls.create(pos, 360, 'i_wall').setImmovable().setOrigin(0,0);
         this.physics.add.collider(this.mole, i_walls);
-        
+
         this.pitSpawner = new Spawner(this, this.mole, Pit, game.config.width,
                                                             this.WORLD_BOUNDS.max / 2,
-                                                            this.POSITIONS[0].y,
+                                                            this.POSITIONS[0].y+25,
                                                             this.POSITIONS[1].y,
                                                             this.SCALE);
         this.physics.add.overlap(this.mole, this.pitSpawner.obstacleGroup, (mole, pit) => {this.handlePits(mole, pit);});
@@ -187,26 +169,26 @@ class Play extends Phaser.Scene {
     handleBats(mole, bat){
         // The mole needs to be on the same plane, not switching and not damaged
         if (mole.switching & !mole.damaged){
-            //console.log("Owww")
             mole.takeDamage();
             if (mole.hits == 0) this.onGameOver();
         }
     }
 
     handlePits(mole, pit){
-        console.log("%d I HIT %d, %f, %d, %d",pit.pit_num, pit.y, pit.scale, pit.depth, pit.plane);
         if (mole.plane == pit.plane && !mole.switching){
             this.onGameOver();   
         }
     }
 
     onGameOver(){
-        this.gameOverTone.play();
-        this.gameOver = true;
-        this.bgMusic.pause();
-        this.mole.onGameOver();
-        this.spawners.forEach((spawner) => {spawner.onGameOver()})
-        this.bat.onGameOver();
+        if (!this.gameOver){
+            this.gameOver = true;
+            this.bgMusic.pause();
+            this.gameOverTone.play();
+            this.mole.onGameOver();
+            this.spawners.forEach((spawner) => {spawner.onGameOver()})
+            this.bat.onGameOver();
+        }
     }
     
     handleGems(mole, gem){
@@ -232,13 +214,14 @@ class Play extends Phaser.Scene {
             this.scene.start("menuScene");
 
         if (!this.gameOver){
-
             this.cave_wall0.tilePositionX += this.mole.speed / 4;
             this.cave_wall1.tilePositionX += this.mole.speed/3;
             this.cave_wall2.tilePositionX += this.mole.speed/2;
             
             this.cave_front.tilePositionX += this.mole.speed;
+            
             this.cave_back.tilePositionX += this.mole.speed/2;
+            
             //this.mole.update();
             this.scoreLabel.text = this.mole.score;
             //controls.update(delta);
