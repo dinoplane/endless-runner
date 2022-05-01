@@ -46,7 +46,7 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
 
 
         this.speedTimer = scene.time.addEvent({
-            delay: 10000,
+            delay: 20000,
             callback: () => {
                 this.crementSpeed(1);
             },
@@ -69,28 +69,66 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         // Animations
         let molecart_run = this.anims.create({
             key: 'molecart_run',
-            frames:  this.anims.generateFrameNumbers('molecart', { start: 0, end: 8, first: 0}),
+            defaultTextureKey: 'mole_atlas',
+            frames:  this.anims.generateFrameNames('mole_atlas', { 
+                prefix: 'molecart', 
+                start: 0, 
+                end: 8, 
+                suffix: '',
+                zeroPad: 4,
+                
+            }),
             frameRate: this.speed*Mole.FR_MULT[2],
             repeat: -1
         });
 
         let molehat_run = this.anims.create({
             key: 'molehat_run',
-            frames:  this.anims.generateFrameNumbers('molehat', { start: 0, end: 8, first: 0}),
+            defaultTextureKey: 'mole_atlas',
+            frames:  this.anims.generateFrameNames('mole_atlas', { 
+                prefix: 'molehat',
+                start: 0, 
+                end: 10, 
+                suffix: '',
+                zeroPad: 4,
+                
+            }),
             frameRate: this.speed*Mole.FR_MULT[2],
             repeat: -1
         });
 
         let molenude_run = this.anims.create({
             key: 'molenude_run',
-            frames:  this.anims.generateFrameNumbers('molenude', { start: 0, end: 8, first: 0}),
+            defaultTextureKey: 'mole_atlas',
+            frames:  this.anims.generateFrameNames('mole_atlas', { 
+                prefix: 'molenude',
+                start: 0, 
+                end: 10, 
+                suffix: '',
+                zeroPad: 4,
+                
+            }),
             frameRate: this.speed*Mole.FR_MULT[2],
+            repeat: -1
+        });
+
+        this.mole_ded = this.anims.create({
+            key: 'mole_ded',
+            defaultTextureKey: 'mole_atlas',
+            frames:  this.anims.generateFrameNames('mole_atlas', { 
+                prefix: 'explosion',
+                start: 0, 
+                end: 6, 
+                suffix: '',
+                zeroPad: 4,
+            }),
+            frameRate: 1,
             repeat: -1
         });
 
         this.moleanims = [molenude_run, molehat_run, molecart_run]
 
-        this.play(this.moleanims[this.hits - 1]);
+        this.anims.play(this.moleanims[this.hits - 1]);
 
 
         // Controls
@@ -165,7 +203,6 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
             this.play(Mole.ANIMS[this.hits-1]);
         }
     }
-    
 
     takeDamage(){
         this.hits -= 1;
@@ -177,17 +214,17 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
             this.crementSpeed(-this.speed/4);
             this.body.setSize(this.width*3/5, this.height, true);
             this.damageTimer.paused = false;
-            console.log("Hits left: ", this.hits)
             this.play(Mole.ANIMS[this.hits-1]);
         }
     }
 
     onGameOver(){
+        this.anims.play('mole_ded');
         this.gameOver = true;
         this.speedTimer.paused = true;
         this.damageTimer.paused = true;
         this.scoreTimer.paused = true;
-        this.visible = false;
+        //this.visible = false;
     }
 
     switchPlanes(){ // basically a swap for 3 values but using tweens.
