@@ -79,8 +79,8 @@ class Play extends Phaser.Scene {
                                                             this.SCALE);
         this.physics.add.overlap(this.mole, this.pitSpawner.obstacleGroup, (mole, pit) => {this.handlePits(mole, pit);});
 
-        this.gemSpawner = new GemSpawner(this, this.mole, Gem, game.config.width/2,
-                                                            this.WORLD_BOUNDS.max / 2,
+        this.gemSpawner = new GemSpawner(this, this.mole, Gem, game.config.width,
+                                                            this.WORLD_BOUNDS.max ,
                                                             this.POSITIONS[0].y,
                                                             this.POSITIONS[1].y,
                                                             this.SCALE,
