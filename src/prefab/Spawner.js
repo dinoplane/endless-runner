@@ -77,12 +77,14 @@ class Spawner{
         obstacle.plane = plane;
         if (obstacle.plane == 0){
             obstacle.scale = 1;
-            obstacle.y = this.POSITIONS[0].y;
+            obstacle.y = this.POSITIONS[0].y+20;
+            obstacle.setVelocityX(this.mole.speed*-100);
         } else {
             obstacle.scale = this.SCALE;
-            obstacle.y = this.POSITIONS[1].y;
+            obstacle.y = this.POSITIONS[1].y+10;
+            obstacle.setVelocityX(this.mole.speed*-70);
         }
-        obstacle.setVelocityX(this.mole.speed*-100);
+        
         this.nextObstacleDistance = Phaser.Math.Between(this.spawnMin, this.spawnMax);
         return obstacle;
     }
