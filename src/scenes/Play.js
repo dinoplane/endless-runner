@@ -136,6 +136,9 @@ class Play extends Phaser.Scene {
            if (this.gameOver) {
                this.goneFar=false;
                 this.ended=false;
+                this.gemSpawner.updateOdds();
+                distance=0;
+                highScore=0;
                 this.scene.restart();
            }
         }); 
@@ -251,7 +254,7 @@ class Play extends Phaser.Scene {
 
             highScore+=distance;
             this.scoreLeft.text=highScore;
-            this.scoreRight.text=distance;
+            //this.scoreRight.text=distance;
             
             if(!this.goneFar&&distance>=2000){
                 this.gemSpawner.updateOdds(1,3,5);
