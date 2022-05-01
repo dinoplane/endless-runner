@@ -6,6 +6,29 @@ class Menu extends Phaser.Scene {
         this.load.audio('bgMusic', './assets/mole_funk.mp3');
         this.load.audio('gem_collect', './assets/gem_collect.wav')
         this.load.audio('gameover', './assets/gameover.mp3')
+
+        this.load.image('gem', './assets/gem.png');
+        this.load.image('gem_red', './assets/gem_red.png');
+        this.load.image('gem_grn', './assets/gem_grn.png');
+
+        this.load.image('cave_wall', './assets/background.png');
+        this.load.image('purplestones', './assets/purplestones.png');
+        this.load.image('stones', './assets/stones.png');
+        
+        this.load.image('cave_front', './assets/ground_front.png');
+        this.load.image('cave_back', './assets/ground_back.png');
+        this.load.image('i_wall', './assets/i_wall.png');
+        this.load.image('pit', './assets/pit.png');
+
+        this.load.image('tracks', './assets/tracks.png');
+
+        this.load.image('b0', './assets/brake_particle0.png');
+        this.load.image('b1', './assets/brake_particle1.png');
+        this.load.image('b2', './assets/brake_particle2.png');
+
+        this.load.atlas('mole_atlas', './assets/mole_atlas.png', './assets/mole_atlas.json');
+
+        this.load.spritesheet('bat', './assets/bat.png', {frameWidth: 128, frameHeight: 64, startFrame: 0, endFrame: 6});
     }
 
     create(){
@@ -30,6 +53,29 @@ class Menu extends Phaser.Scene {
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
         keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+        
+        this.bat = this.add.sprite(game.config.width, 500, 'bat', 0).setOrigin(0,0);
+        this.bat.anims.create({
+            key: 'flap',
+            frames: this.anims.generateFrameNumbers('bat', { start: 0, end: 6, first: 0}),
+            frameRate: 15,
+            repeat: -1
+        }); 
+        
+        this.bat.play('flap');
+
+        this.tweens.add({
+            targets: this.bat,
+            y: 600,
+            //scale: 1,
+            duration: 1000,
+            ease: 'Sine.easeInOut',
+            easeParams: [ 3.5 ],
+            //delay: 1000,
+            repeat:-1,
+            yoyo: true,            
+        });
+
     }
     update() {
         if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
@@ -38,5 +84,8 @@ class Menu extends Phaser.Scene {
           //play start sfx
           this.scene.start('playScene');
         }
+        this.bat.x -= 1;
+        if (this.bat.x < -this.bat.width)
+            this.bat.x = game.config.width;
     }
 }

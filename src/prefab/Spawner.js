@@ -4,7 +4,7 @@ class Spawner{
         this.scene = scene;
         this.WORLD_BOUNDS = this.scene.WORLD_BOUNDS;
         this.SCALE = this.scene.SCALE;
-        this.POSITIONS = this.scene.POSITIONS;
+        this.POSITIONS = [args[1], args[2]];
         this.args = args;
         this.spawnMin = spawnMin;
         this.spawnMax = args[0];
@@ -60,40 +60,26 @@ class Spawner{
         if(this.obstaclePool.getLength()){
             
             obstacle = this.obstaclePool.getFirst();
-            // console.log("Pit %d: 1st %d, %f, %d, %d", obstacle.pit_num, obstacle.y, obstacle.scale, obstacle.depth, obstacle.plane);
-        // console.log("1stC %d, %f, %d, %d", obstacle.cachedData.y, obstacle.cachedData.scale, obstacle.cachedData.depth, +!obstacle.plane);
-            console.log(obstacle)
             obstacle.x = posX;
             obstacle.active = true;
             obstacle.visible = true;
             obstacle.refreshBody();
-            // console.log("Pit %d: 2nd %d, %f, %d, %d", obstacle.pit_num, obstacle.y, obstacle.scale, obstacle.depth, obstacle.plane);
-        // console.log("2ndC %d, %f, %d, %d", obstacle.cachedData.y, obstacle.cachedData.scale, obstacle.cachedData.depth, +!obstacle.plane);
-        
+
             this.obstaclePool.remove(obstacle);
             obstacle.setPlane(plane);
-            // console.log("Pit %d: 3rd %d, %f, %d, %d", obstacle.pit_num, obstacle.y, obstacle.scale, obstacle.depth, obstacle.plane);
-        // console.log("3rdC %d, %f, %d, %d", obstacle.cachedData.y, obstacle.cachedData.scale, obstacle.cachedData.depth, +!obstacle.plane);
-        
         }
         else{
-            // console.log("Plane", !plane)
             obstacle = new this.type(this.scene, ...this.args, plane);  
-            //let s =  (game.config.height - obstacle.y) / obstacle.width;
             obstacle.setOrigin(0,0).refreshBody();
             this.obstacleGroup.add(obstacle);
         }
 
-        // console.log("Pit %d: FINAL %d, %f, %d, %d", obstacle.pit_num, obstacle.y, obstacle.scale, obstacle.depth, obstacle.plane);
-        // console.log("CINAL %d, %f, %d, %d", obstacle.cachedData.y, obstacle.cachedData.scale, obstacle.cachedData.depth, +!obstacle.plane);
         obstacle.plane = plane;
         if (obstacle.plane == 0){
-            //obstacle.depth = 6;
             obstacle.scale = 1;
             obstacle.y = this.POSITIONS[0].y+20;
             obstacle.setVelocityX(this.mole.speed*-100);
         } else {
-            //obstacle.depth = 3;
             obstacle.scale = this.SCALE;
             obstacle.y = this.POSITIONS[1].y+10;
             obstacle.setVelocityX(this.mole.speed*-70);
@@ -121,21 +107,15 @@ class Spawner{
             let minDistance = this.spawnMax;
             
             this.obstacleGroup.getChildren().forEach(function(obstacle){
-                //obstacle.y = 486; // Gets  offset by 160 for some reason???
                 let obstacleDistance = this.spawnMax - obstacle.x - obstacle.displayWidth;
                 minDistance = Math.min(minDistance, obstacleDistance);
-                obstacle.y = this.POSITIONS[+obstacle.plane].y; 
+                obstacle.y = this.POSITIONS[+obstacle.plane]; 
                 if(obstacle.x < - obstacle.displayWidth){
                     this.obstacleGroup.killAndHide(obstacle);
                     this.obstacleGroup.remove(obstacle);
                 }
-                // if (obstacle.y < (this.POSITIONS[1].y)) {
-                //     console.log("Too high 0");
-                // }
-                // if (obstacle.y > (this.POSITIONS[0].y)) {
-                //     console.log("Too low 0");
-                // }
             }, this);
+            
             // adding new obstacles
             if(minDistance > this.nextObstacleDistance && !this.cooldown){
                 console.log(this.type, minDistance, ">", this.nextObstacleDistance);
