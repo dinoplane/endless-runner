@@ -24,9 +24,8 @@ class Play extends Phaser.Scene {
         this.load.image('b1', './assets/brake_particle1.png');
         this.load.image('b2', './assets/brake_particle2.png');
 
-        this.load.spritesheet('molecart', './assets/molecart.png', {frameWidth: 128, frameHeight: 128, startFrame: 0, endFrame: 8});
-        this.load.spritesheet('molehat', './assets/molehat.png', {frameWidth: 128, frameHeight: 128, startFrame: 0, endFrame: 8});
-        this.load.spritesheet('molenude', './assets/molenude.png', {frameWidth: 128, frameHeight: 128, startFrame: 0, endFrame: 8});
+        this.load.atlas('mole_atlas', './assets/mole_atlas.png', './assets/mole_atlas.json');
+
         this.load.spritesheet('bat', './assets/bat.png', {frameWidth: 128, frameHeight: 64, startFrame: 0, endFrame: 6});
     }
 
@@ -76,7 +75,7 @@ class Play extends Phaser.Scene {
                                 console.log();
         this.mole = new Mole(this, this.POSITIONS[0].x, this.POSITIONS[0].y,
                                    this.POSITIONS[1].x, this.POSITIONS[1].y, 
-                                   this.SCALE, 'molecart', 0).setDepth(7);
+                                   this.SCALE, 'mole_atlas', 'molecart-0000').setDepth(7);
 
                                    console.log("TATA");
 

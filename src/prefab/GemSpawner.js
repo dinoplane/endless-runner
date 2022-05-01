@@ -6,8 +6,8 @@ class GemSpawner extends Spawner {
 
     static GEM_VAL_TEXTURE = [ 
                                 [2000, 'gem'], 
-                                [5000, 'gem_red'], 
-                                [8000, 'gem_grn']
+                                [5000, 'gem_grn'], 
+                                [8000, 'gem_red']
                             ]; // Play.
     static GEM_ODDS = [
         1, 6, 9

@@ -69,28 +69,49 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         // Animations
         let molecart_run = this.anims.create({
             key: 'molecart_run',
-            frames:  this.anims.generateFrameNumbers('molecart', { start: 0, end: 8, first: 0}),
+            frames:  this.anims.generateFrameNumbers('mole_atlas', { 
+                prefix: 'molecart-', 
+                start: 1, 
+                end: 8, 
+                suffix: '',
+                zeroPad: 4,
+                
+            }),
             frameRate: this.speed*Mole.FR_MULT[2],
             repeat: -1
         });
 
         let molehat_run = this.anims.create({
-            key: 'molehat_run',
-            frames:  this.anims.generateFrameNumbers('molehat', { start: 0, end: 8, first: 0}),
+            key: 'molehat_run-',
+            frames:  this.anims.generateFrameNumbers('mole_atlas', { 
+                prefix: 'molehat-',
+                start: 1, 
+                end: 8, 
+                suffix: '',
+                zeroPad: 4,
+                
+            }),
             frameRate: this.speed*Mole.FR_MULT[2],
             repeat: -1
         });
 
         let molenude_run = this.anims.create({
             key: 'molenude_run',
-            frames:  this.anims.generateFrameNumbers('molenude', { start: 0, end: 8, first: 0}),
+            frames:  this.anims.generateFrameNumbers('mole_atlas', { 
+                prefix: 'molenude-',
+                start: 1, 
+                end: 8, 
+                suffix: '',
+                zeroPad: 4,
+                
+            }),
             frameRate: this.speed*Mole.FR_MULT[2],
             repeat: -1
         });
 
         this.moleanims = [molenude_run, molehat_run, molecart_run]
 
-        this.play(this.moleanims[this.hits - 1]);
+        this.anims.play(this.moleanims[this.hits - 1]);
 
 
         // Controls
