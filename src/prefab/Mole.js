@@ -244,7 +244,7 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
                 this.switching = false;
                 this.plane = 1;
                 this.depth = 5;
-                this.setMaxVelocity(270, 0);
+                //this.setMaxVelocity(180, 0);
             },
             onUpdate: () => {  },
             paused: true
