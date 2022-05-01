@@ -6,8 +6,8 @@ class GemSpawner extends Spawner {
 
     static GEM_VAL_TEXTURE = [ 
                                 [2000, 'gem'], 
-                                [5000, 'gem_grn'], 
-                                [8000, 'gem_red']
+                                [5000, 'gem_red'], 
+                                [8000, 'gem_grn']
                             ]; // Play.
     static GEM_ODDS = [
         1, 6, 9
@@ -34,7 +34,7 @@ class GemSpawner extends Spawner {
         }else if(tempNum>=GemSpawner.GEM_ODDS[0]){
             i=0;
         }}
-        //console.log(GemSpawner.GEM_VAL_TEXTURE.length, GemSpawner.GEM_VAL_TEXTURE[i]);
+        console.log(GemSpawner.GEM_VAL_TEXTURE.length, GemSpawner.GEM_VAL_TEXTURE[i]);
         gem.changeValue(GemSpawner.GEM_VAL_TEXTURE[i][1], GemSpawner.GEM_VAL_TEXTURE[i][0]);
         return gem;
     }
