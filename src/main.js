@@ -4,14 +4,16 @@
 
 // Mole Rush
 // Completed: May 2nd
+// Time taken: 40+ hours cummulative
 
 // Do we still need load
 // Put our names
 // Do one final check on the code
 // Some sort of message to convey the purpose of the mole
-// Tilt?
+// Tilt mole?
 // Bouncing mole?
 // Mole Speed up message
+// Add numbers text (use a tween on the alpha)
 
 
 // Creative Tilts

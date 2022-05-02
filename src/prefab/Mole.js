@@ -205,14 +205,17 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
             for (let k of this.controls[d]){
                 if (!k.isDown){
                     this.setAcceleration(0, 0);
+                    this.angle = 0;
                     this.sparksEmitter.stop();
                     this.moleanims[this.hits - 1].frameRate = this.speed*Mole.FR_MULT[this.hits - 1];
                 } else {
                     if (-a < 0){
                         d = 0.5;
+                        this.angle = -10;
                         this.sparksEmitter.start();
                     } else {
                         d = 10;
+                        this.angle = 0;
                         this.sparksEmitter.stop();
                     };
                     this.setAcceleration(-a, 0);
@@ -229,9 +232,11 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
             let d;
             if (a < 0){
                 d = 0.5;
+                this.angle = -10;
                 this.sparksEmitter.start();
             } else {
                 d = 10;
+                this.angle = 0;
                 this.sparksEmitter.stop();
             };
             this.setAcceleration(a, 0);
