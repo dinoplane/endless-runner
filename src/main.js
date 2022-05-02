@@ -11,6 +11,7 @@
 // Do one final check on the code
 // Some sort of message to convey the purpose of the mole
 // Mole Speed up message
+// Bouncing mole
 // Add numbers text (use a tween on the alpha)
 
 
