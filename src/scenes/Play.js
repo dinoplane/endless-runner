@@ -26,7 +26,7 @@ class Play extends Phaser.Scene {
         this.gameOverTone = this.sound.add('gameover', {volume: 0.3});
         this.audiotracks = [this.bgMusic, this.gemCollect, this.gameOverTone]
 
-        //this.particleManager = this.add.particles('texture_key')
+        
         // this.particleSystem = this.particleManager.createEmitter({})
 
         // this.particleSystem = this.particleManager.createEmitter();
@@ -246,7 +246,7 @@ class Play extends Phaser.Scene {
             
             this.cave_back.tilePositionX += this.mole.speed/2;
             
-            //this.mole.update();
+            this.mole.update();
             this.scoreLabel.text = this.mole.score;
             controls.update(delta);
             distance++;

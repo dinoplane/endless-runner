@@ -24,9 +24,7 @@ class Menu extends Phaser.Scene {
 
         this.load.image('tracks', './assets/tracks.png');
 
-        this.load.image('b0', './assets/brake_particle0.png');
-        this.load.image('b1', './assets/brake_particle1.png');
-        this.load.image('b2', './assets/brake_particle2.png');
+        this.load.atlas('sparks', './assets/sparks.png', './assets/sparks.json');
 
         this.load.atlas('mole_atlas', './assets/mole_atlas.png', './assets/mole_atlas.json');
 
@@ -34,7 +32,6 @@ class Menu extends Phaser.Scene {
         this.load.image('gameoverprompt', './assets/gameover.png');
         this.load.image('buttons', './assets/space.png');
 
-        //this.load.image('brake')
 
         this.load.bitmapFont('lavender', './assets/numbers.png', './assets/numbers.xml');
 

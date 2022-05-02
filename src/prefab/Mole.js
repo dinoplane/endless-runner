@@ -37,8 +37,25 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         this.setMaxVelocity(400, 0);
         this.setDrag(300);
         
-        // Timers
+        this.sparksManager = scene.add.particles('sparks').setDepth(this.depth);
+        this.sparksEmitter = this.sparksManager.createEmitter({
+            frame: ['spark0', 'spark1', 'spark2'],
+            x: this.x - this.displayWidth/4, 
+            y: this.y + this.displayWidth/4,
+            lifespan: 500,
+            speed: { min: 600, max: 600 },
+            angle: { min: 200, max: 220 },
+            acceleration: false,
+            scale: { start: 0.4, end: 0 },
+            quantity: 2,
+            scrollFactorX: 100,
+            blendMode: 'ADD',
+            //angularDrag: 0,
+        });
+        console.log(this.sparksEmitter)
+        this.sparksEmitter.stop();
 
+        // Timers
         this.scoreTimer = scene.time.addEvent({
             delay: 1000/this.speed,
             callback: () => {
@@ -168,6 +185,9 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         }
         //Invisible barriers are set in Play
     }
+    update(){
+        this.sparksEmitter.setPosition(this.x - this.displayWidth/4, this.y + this.displayWidth/2);
+    }
 
     updateScore(val){
         this.score += val;
@@ -185,9 +205,16 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
             for (let k of this.controls[d]){
                 if (!k.isDown){
                     this.setAcceleration(0, 0);
+                    this.sparksEmitter.stop();
                     this.moleanims[this.hits - 1].frameRate = this.speed*Mole.FR_MULT[this.hits - 1];
                 } else {
-                    let d = (-a < 0) ? 0.5: 10;
+                    if (-a < 0){
+                        d = 0.5;
+                        this.sparksEmitter.start();
+                    } else {
+                        d = 10;
+                        this.sparksEmitter.stop();
+                    };
                     this.setAcceleration(-a, 0);
                     this.moleanims[this.hits - 1].frameRate = this.speed*Mole.FR_MULT[this.hits - 1]*d;
                     break;
@@ -199,7 +226,14 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
 
     onXDown(a){
         if (!this.gameOver){
-            let d = (a < 0) ? 0.5: 10;
+            let d;
+            if (a < 0){
+                d = 0.5;
+                this.sparksEmitter.start();
+            } else {
+                d = 10;
+                this.sparksEmitter.stop();
+            };
             this.setAcceleration(a, 0);
             this.moleanims[this.hits - 1].frameRate = this.speed*Mole.FR_MULT[this.hits - 1]*d;
             this.play(Mole.ANIMS[this.hits-1]);
