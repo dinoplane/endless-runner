@@ -25,7 +25,12 @@
 //              In addition, this allowed us to compartmentalize the core randomness
 //              of our game i.e. the Spawner, so that one can manage the positions in one place.
 
-// Art: 
+// Art: We took the endless runner format and put our own spin on it by creating two different planes
+//      that the Mole could hop in between, utilizing this to create our enemies and pick ups around this idea.
+//      This allowed us to create not only the pits that collide with Mole on the tracks but also the bats which
+//      collide with Mole while *crossing* tracks. The visual style overall was also worked on quite heavily, 
+//      with handmade fonts and animations to give that game a proper feel. 
+
 
 var config = {
     type: Phaser.CANVAS,
