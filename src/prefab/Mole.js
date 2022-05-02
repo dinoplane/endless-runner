@@ -35,7 +35,7 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
 
         this.hitHurt = scene.sound.add('hit_hurt');
         this.boom = scene.sound.add('boom');
-        this.brake = scene.sound.add('brake', {volume: 0.15, loop: true});
+        this.brake = scene.sound.add('brake', {volume: 0.05, loop: true});
         this.audiotracks = [this.hitHurt, this.boom, this.brake];
 
         this.setMaxVelocity(400, 0);
