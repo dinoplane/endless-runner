@@ -104,7 +104,7 @@ class Spawner{
             obstacle.setVelocityX(this.mole.speed*-70);
         }
         
-        this.nextObstacleDistance = 50;//Phaser.Math.Between(this.spawnMin, this.spawnMax);
+        this.nextObstacleDistance = Phaser.Math.Between(this.spawnMin, this.spawnMax);
 
 
         return obstacle;

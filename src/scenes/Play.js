@@ -77,7 +77,7 @@ class Play extends Phaser.Scene {
                                                             this.POSITIONS[0].y+25,
                                                             this.POSITIONS[1].y+10,
                                                             this.SCALE);
-        this.physics.add.overlap(this.mole, this.pitSpawner.obstacleGroup)//(mole, pit) => {this.handlePits(mole, pit);});
+        this.physics.add.overlap(this.mole, this.pitSpawner.obstacleGroup, (mole, pit) => {this.handlePits(mole, pit);});
 
         this.gemSpawner = new GemSpawner(this, this.mole, Gem, game.config.width,
                                                             this.WORLD_BOUNDS.max ,
@@ -85,7 +85,7 @@ class Play extends Phaser.Scene {
                                                             this.POSITIONS[1].y,
                                                             this.SCALE,
                                                             'gem',
-                                                            2000);
+                                                            200);
         this.physics.add.overlap(this.mole, this.gemSpawner.obstacleGroup, (mole, gem) => {this.handleGems(mole, gem);});
 
         this.spawners = [this.pitSpawner, this.gemSpawner];
@@ -216,7 +216,7 @@ class Play extends Phaser.Scene {
     }
     
     handleGems(mole, gem){
-        if (mole.plane == gem.plane){
+        if (mole.plane == gem.plane||mole.switching){
             this.gemCollect.play();
             mole.updateScore(gem.value);
             this.gemSpawner.obstacleGroup.killAndHide(gem);
@@ -259,14 +259,13 @@ class Play extends Phaser.Scene {
             this.scoreLeft.text=highScore;
             //this.scoreRight.text=distance;
             
-            if(!this.goneFar&&distance>=2000){
-                this.gemSpawner.updateOdds(1,3,5);
+            if(!this.goneFar&&distance>=6000){
+                this.gemSpawner.updateOdds(1,2,5);
                 this.goneFar=true;
             }
-        }else if(this.ended==false){
-            //play death animation
-            //stop all actions
-            this.ended=true; // oh yea im doing this via call backs
+        }else if(!this.goneFar&&distance>=2500){
+            this.gemSpawner.updateOdds(1,4,7);
+        } // oh yea im doing this via call backs
             //this.add.text(game.config.width/2, game.config.height/2 + 64, 'Game Over').setOrigin(0.5).setDepth(10);;
             //this.add.text(game.config.width/2, game.config.height/2 + 96, 'Press (R) to Restart').setOrigin(0.5).setDepth(10);
         // }else{
@@ -284,7 +283,6 @@ class Play extends Phaser.Scene {
         //         this.scene.restart();
         //     }
         }
-    }
 
     getRandomInt(max = 0) {
         return Math.floor(Math.random() * max);
@@ -293,5 +291,5 @@ class Play extends Phaser.Scene {
     getRandomInt(min=0, max = 0) {
         return min + Math.floor(Math.random() * (max - min));
     }
-
 }
+
