@@ -36,6 +36,8 @@ class Menu extends Phaser.Scene {
 
         //this.load.image('brake')
 
+        this.load.bitmapFont('lavender', './assets/numbers.png', './assets/numbers.xml');
+
         this.load.spritesheet('bat', './assets/bat.png', {frameWidth: 128, frameHeight: 64, startFrame: 0, endFrame: 6});
     }
 

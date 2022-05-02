@@ -77,7 +77,7 @@ class Play extends Phaser.Scene {
                                                             this.POSITIONS[0].y+25,
                                                             this.POSITIONS[1].y+10,
                                                             this.SCALE);
-        this.physics.add.overlap(this.mole, this.pitSpawner.obstacleGroup, (mole, pit) => {this.handlePits(mole, pit);});
+        this.physics.add.overlap(this.mole, this.pitSpawner.obstacleGroup)//(mole, pit) => {this.handlePits(mole, pit);});
 
         this.gemSpawner = new GemSpawner(this, this.mole, Gem, game.config.width,
                                                             this.WORLD_BOUNDS.max ,
@@ -96,6 +96,20 @@ class Play extends Phaser.Scene {
                                     this.gemSpawner.obstacleGroup.killAndHide(gem);
                                     this.gemSpawner.obstacleGroup.remove(gem);
                         });
+
+        this.anims.create({
+            key: 'mini',
+            defaultTextureKey: 'mole_atlas',
+            frames:  this.anims.generateFrameNames('mole_atlas', { 
+                prefix: 'explosion',
+                start: 0, 
+                end: 6, 
+                suffix: '',
+                zeroPad: 4,
+            }),
+            frameRate: 12,
+            
+        });
 
        // Debugging tool
        var controlConfig = {
@@ -154,8 +168,8 @@ class Play extends Phaser.Scene {
         },
         fixedWidth: 100
     }
-    this.scoreLabel = this.add.text(borderUISize + borderPadding, 
-                                    borderUISize + borderPadding*2, this.mole.score, scoreConfig).setDepth(10);
+    this.scoreLabel = this.add.bitmapText(borderUISize + borderPadding, 
+                                    borderUISize + borderPadding*2, 'lavender', ''  );
     }
 
 
@@ -171,6 +185,13 @@ class Play extends Phaser.Scene {
     handleBats(mole, bat){
         // The mole needs to be on the same plane, not switching and not damaged
         if (mole.switching & !mole.damaged){
+            let tmpBoom = this.add.sprite(bat.x, bat.y, 'mole_atlas', 'explosion0000')
+                                    .setOrigin(0,0).setScale(0.8).setDepth(10);
+            tmpBoom.play('mini');
+            tmpBoom.on('animationcomplete', () => {    // callback after anim completes
+                tmpBoom.visible = false;
+                tmpBoom.destroy();
+            });
             mole.takeDamage();
             if (mole.hits == 0) this.onGameOver();
         }

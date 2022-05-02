@@ -1,4 +1,4 @@
-// Refactor code so that we use arcade sprite instead.
+// Refactor code so that we use arcade sprite instead. // Add sparks explosion and edit frame rate 128 128 revisze mole sprite
 
 class Mole extends Phaser.Physics.Arcade.Sprite {
     //POSITIONS = config;
@@ -80,7 +80,6 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
                 end: 8, 
                 suffix: '',
                 zeroPad: 4,
-                
             }),
             frameRate: this.speed*Mole.FR_MULT[2],
             repeat: -1
@@ -126,7 +125,7 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
                 suffix: '',
                 zeroPad: 4,
             }),
-            frameRate: 8,
+            frameRate: 12,
         });
 
         this.moleanims = [molenude_run, molehat_run, molecart_run]
@@ -188,7 +187,7 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
                     this.setAcceleration(0, 0);
                     this.moleanims[this.hits - 1].frameRate = this.speed*Mole.FR_MULT[this.hits - 1];
                 } else {
-                    let d = (a < 0) ? 10: 0.2;
+                    let d = (-a < 0) ? 0.5: 10;
                     this.setAcceleration(-a, 0);
                     this.moleanims[this.hits - 1].frameRate = this.speed*Mole.FR_MULT[this.hits - 1]*d;
                     break;
@@ -200,9 +199,9 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
 
     onXDown(a){
         if (!this.gameOver){
-            let d = (a < 0) ? 0.2: 10;
+            let d = (a < 0) ? 0.5: 10;
             this.setAcceleration(a, 0);
-            this.moleanims[this.hits - 1].frameRate = this.speed*this.speed*Mole.FR_MULT[this.hits - 1]*d;
+            this.moleanims[this.hits - 1].frameRate = this.speed*Mole.FR_MULT[this.hits - 1]*d;
             this.play(Mole.ANIMS[this.hits-1]);
         }
     }
@@ -212,10 +211,12 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         this.damaged = true;
 
         if (this.hits > 0){
-            this.hitHurt.play();
+            this.boom.play({volume: 0.5});
+
             this.crementSpeed(-this.speed/5);
             this.body.setSize(this.width*3/5, this.height, true);
             this.damageTimer.paused = false;
+
             this.play(Mole.ANIMS[this.hits-1]);
         }
     }
@@ -231,7 +232,6 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         this.speedTimer.paused = true;
         this.damageTimer.paused = true;
         this.scoreTimer.paused = true;
-
     }
 
     stopAudio(){
