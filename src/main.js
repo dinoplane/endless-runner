@@ -1,3 +1,29 @@
+// Will Tate
+// Dalia De La Luz
+// Arrian Chi
+
+// Mole Rush
+// Completed: May 2nd
+
+// Do we still need load
+// Put our names
+// Do one final check on the code
+// Some sort of message to convey the purpose of the mole
+// Tilt?
+// Bouncing mole?
+// Mole Speed up message
+
+
+// Creative Tilts
+// Programming: Instead of utilizing the mole's collision with the ground and fall
+//               through pits, we figured it would best fit our style if we made our 
+//              Mole collide with a Pit Sprite. In this way, we were able to extend 
+//              our Sprite collision to all objects the Mole could collide with and
+//              prevent Mole from dealing with weird collision glitches with Arcade Physics.
+//              In addition, this allowed us to compartmentalize the core randomness
+//              of our game i.e. the Spawner, so that one can manage the positions in one place.
+
+// Art: 
 
 var config = {
     type: Phaser.CANVAS,
@@ -12,7 +38,6 @@ var config = {
     }
   }
 
-// Some sort of message to convey the purpose of the mole
 
   // global game options
 let gameOptions = {
@@ -35,5 +60,5 @@ let keyF, keyR, keyLEFT, keyRIGHT, keySPACE, keyUP, keyENTER;
 
 let highScore = 0; distance =0;
 
-// Spawning taken from 
+// Spawning inspired from 
 // https://www.emanueleferonato.com/2018/11/13/build-a-html5-endless-runner-with-phaser-in-a-few-lines-of-code-using-arcade-physics-and-featuring-object-pooling/

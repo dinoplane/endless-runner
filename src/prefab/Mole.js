@@ -262,6 +262,7 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         this.on('animationcomplete', () => {    // callback after anim completes
             this.visible = false;
         });
+        this.sparksEmitter.stop();
         this.gameOver = true;
         this.speedTimer.paused = true;
         this.damageTimer.paused = true;
