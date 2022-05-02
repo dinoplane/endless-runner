@@ -32,6 +32,9 @@ class Menu extends Phaser.Scene {
         this.load.image('gameoverprompt', './assets/gameover.png');
         this.load.image('buttons', './assets/space.png');
 
+        this.load.image('tutorial1', './assets/tutorial1.png');
+        this.load.image('tutorial2', './assets/tutorial2.png');
+
 
         this.load.bitmapFont('lavender', './assets/numbers.png', './assets/numbers.xml');
 
@@ -69,6 +72,7 @@ class Menu extends Phaser.Scene {
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
         keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+        keyENTER = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
         
         this.bat = this.add.sprite(game.config.width, 500, 'bat', 0).setOrigin(0,0);
         this.bat.anims.create({
@@ -77,8 +81,24 @@ class Menu extends Phaser.Scene {
             frameRate: 15,
             repeat: -1
         }); 
-        
         this.bat.play('flap');
+        
+        this.tutorial = [];
+        this.tutorial.push(this.add.image(0, 0, 'tutorial1').setOrigin(0, 0).setDepth(10).setVisible(false));
+        this.tutorial.push(this.add.image(0, 0, 'tutorial2').setOrigin(0, 0).setDepth(10).setVisible(false));
+
+        this.mode = 0;
+        keyENTER.on('down', () => {
+            if (this.mode < 2) this.tutorial[this.mode].setVisible(true);
+            if (this.mode > 0) this.tutorial[this.mode-1].setVisible(false);            
+            this.mode = (this.mode + 1) % 3;
+        });
+
+        keySPACE.on('down', () => {
+            if (this.mode == 0) this.scene.start('playScene');
+        });
+
+        
 
         this.tweens.add({
             targets: this.bat,
@@ -94,12 +114,6 @@ class Menu extends Phaser.Scene {
 
     }
     update() {
-        if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
-          game.settings = {
-          }
-          //play start sfx
-          this.scene.start('playScene');
-        }
         this.bat.x -= 1;
         if (this.bat.x < -this.bat.width)
             this.bat.x = game.config.width;

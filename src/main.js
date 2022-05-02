@@ -31,7 +31,7 @@ let borderUISize = game.config.height / 15;
 let borderPadding = borderUISize / 3;
 
 let controls;
-let keyF, keyR, keyLEFT, keyRIGHT, keySPACE, keyUP;
+let keyF, keyR, keyLEFT, keyRIGHT, keySPACE, keyUP, keyENTER;
 
 let highScore = 0; distance =0;
 

@@ -136,11 +136,16 @@ class Play extends Phaser.Scene {
                 this.scene.restart();
            }
         }); 
-        // this.keyT.on('down', (key) => {
-        //     if (this.gameOver) 
-        //     this.scene.start("menuScene");
-        //     this.ended=false;
-        //  }); 
+
+        keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+        keySPACE.on('down', (key) => {
+            if (this.gameOver) { 
+                this.audiotracks.forEach((sound) => {sound.stop();})
+                this.mole.stopAudio();
+                this.scene.start("menuScene");
+            }
+            //this.ended=false;
+         }); 
        
         this.add.rectangle(0, 0, game.config.width, borderUISize, 0x130F3E)
                             .setOrigin(0, 0).setDepth(9);
@@ -234,9 +239,6 @@ class Play extends Phaser.Scene {
     }
 
     update(time, delta){
-        if (this.gameOver && Phaser.Input.Keyboard.JustDown(keySPACE))
-            this.scene.start("menuScene");
-
         if (!this.gameOver){
             this.cave_wall0.tilePositionX += this.mole.speed / 4;
             this.cave_wall1.tilePositionX += this.mole.speed/3;
