@@ -34,6 +34,8 @@ class Menu extends Phaser.Scene {
         this.load.image('gameoverprompt', './assets/gameover.png');
         this.load.image('buttons', './assets/space.png');
 
+        //this.load.image('brake')
+
         this.load.spritesheet('bat', './assets/bat.png', {frameWidth: 128, frameHeight: 64, startFrame: 0, endFrame: 6});
     }
 

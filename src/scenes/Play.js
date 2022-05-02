@@ -26,7 +26,7 @@ class Play extends Phaser.Scene {
         this.gameOverTone = this.sound.add('gameover', {volume: 0.3});
         this.audiotracks = [this.bgMusic, this.gemCollect, this.gameOverTone]
 
-        // this.particleManager = this.add.particles('texture_key')
+        //this.particleManager = this.add.particles('texture_key')
         // this.particleSystem = this.particleManager.createEmitter({})
 
         // this.particleSystem = this.particleManager.createEmitter();
@@ -128,13 +128,13 @@ class Play extends Phaser.Scene {
         //     this.ended=false;
         //  }); 
        
-        this.add.rectangle(0, 0, game.config.width, borderUISize, 0xFFFFFF)
+        this.add.rectangle(0, 0, game.config.width, borderUISize, 0x130F3E)
                             .setOrigin(0, 0).setDepth(9);
-        this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0xFFFFFF)
+        this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0x130F3E)
                             .setOrigin(0, 0).setDepth(9);
-        this.add.rectangle(0, 0, borderUISize, game.config.height, 0xFFFFFF)
+        this.add.rectangle(0, 0, borderUISize, game.config.height, 0x130F3E)
                             .setOrigin(0, 0).setDepth(9);
-        this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0xFFFFFF)
+        this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0x130F3E)
                             .setOrigin(0, 0).setDepth(9);
                             
         //this.physics.add.overlap(this.mole, this.obstacleGroup);

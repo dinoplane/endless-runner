@@ -7,7 +7,7 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
     static ANIMS = [ 'molenude_run', 'molehat_run', 'molecart_run']
     static FR_MULT = [3, 5, 10];
 
-    static CONTROL_CONFIG = [{name: 'left', arg: -Mole.ACCEL, keycodes: [Phaser.Input.Keyboard.KeyCodes.A, Phaser.Input.Keyboard.KeyCodes.LEFT], },
+    static CONTROL_CONFIG = [{name: 'left', arg: -Mole.ACCEL - 500, keycodes: [Phaser.Input.Keyboard.KeyCodes.A, Phaser.Input.Keyboard.KeyCodes.LEFT], },
                        {name: 'right', arg: +Mole.ACCEL, keycodes: [Phaser.Input.Keyboard.KeyCodes.D, Phaser.Input.Keyboard.KeyCodes.RIGHT]}]
 
     constructor(scene, x, y, cx, cy, scale, texture, frame) {
@@ -34,7 +34,7 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         this.boom = scene.sound.add('boom');
         this.audiotracks = [this.hitHurt, this.boom];
 
-        this.setMaxVelocity(300, 0);
+        this.setMaxVelocity(400, 0);
         this.setDrag(300);
         
         // Timers
@@ -213,7 +213,7 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
 
         if (this.hits > 0){
             this.hitHurt.play();
-            this.crementSpeed(-this.speed/4);
+            this.crementSpeed(-this.speed/5);
             this.body.setSize(this.width*3/5, this.height, true);
             this.damageTimer.paused = false;
             this.play(Mole.ANIMS[this.hits-1]);
@@ -255,7 +255,7 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
                 this.switching = false;
                 this.plane = 1;
                 this.depth = 5;
-                this.setMaxVelocity(270, 0);
+                this.setMaxVelocity(370, 0);
             },
             onUpdate: () => {  },
             paused: true
@@ -278,7 +278,7 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
                 this.setImmovable(false); 
                 this.switching = false;
                 this.plane = 0;
-                this.setMaxVelocity(300, 0);
+                this.setMaxVelocity(400, 0);
             },
             onUpdate: () => {  },
             paused: true
