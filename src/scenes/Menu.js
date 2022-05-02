@@ -8,6 +8,7 @@ class Menu extends Phaser.Scene {
         this.load.audio('gameover', './assets/gameover.mp3');
         this.load.audio('boom', './assets/explosion.wav');
         this.load.audio('hit_hurt', './assets/hitHurt.wav');
+        this.load.audio('brake', './assets/brake.mp3');
 
         this.load.image('gem', './assets/gem.png');
         this.load.image('gem_red', './assets/gem_red.png');

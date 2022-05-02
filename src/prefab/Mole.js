@@ -2,7 +2,7 @@
 
 class Mole extends Phaser.Physics.Arcade.Sprite {
     //POSITIONS = config;
-    static MAX_OFFSET = 150;
+    static MAX_OFFSET = [];
     static ACCEL = 700;
     static ANIMS = [ 'molenude_run', 'molehat_run', 'molecart_run']
     static FR_MULT = [3, 5, 10];
@@ -12,6 +12,9 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
 
     constructor(scene, x, y, cx, cy, scale, texture, frame) {
         super(scene, x, y, texture, frame);
+        this.OFFSETS = [{x: - 0.25, y: 0.5},
+                        {x: - 0.25, y: 0.5},
+                        {x: - 0.25, y: 0.5}]
 
         // add object to existing scene
         scene.add.existing(this);
@@ -32,7 +35,8 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
 
         this.hitHurt = scene.sound.add('hit_hurt');
         this.boom = scene.sound.add('boom');
-        this.audiotracks = [this.hitHurt, this.boom];
+        this.brake = scene.sound.add('brake', {volume: 0.15, loop: true});
+        this.audiotracks = [this.hitHurt, this.boom, this.brake];
 
         this.setMaxVelocity(400, 0);
         this.setDrag(300);
@@ -186,7 +190,8 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         //Invisible barriers are set in Play
     }
     update(){
-        this.sparksEmitter.setPosition(this.x - this.displayWidth/4, this.y + this.displayWidth/2);
+        this.sparksEmitter.setPosition(this.x + this.displayWidth * this.OFFSETS[this.hits-1].x,
+                                       this.y + this.displayHeight * this.OFFSETS[this.hits-1].y);
     }
 
     updateScore(val){
@@ -207,15 +212,18 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
                     this.setAcceleration(0, 0);
                     this.angle = 0;
                     this.sparksEmitter.stop();
+                    this.brake.stop();
                     this.moleanims[this.hits - 1].frameRate = this.speed*Mole.FR_MULT[this.hits - 1];
                 } else {
                     if (-a < 0){
                         d = 0.5;
                         this.angle = -10;
                         this.sparksEmitter.start();
+                        this.brake.play();
                     } else {
                         d = 10;
                         this.angle = 0;
+                        this.brake.stop();
                         this.sparksEmitter.stop();
                     };
                     this.setAcceleration(-a, 0);
@@ -233,10 +241,12 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
             if (a < 0){
                 d = 0.5;
                 this.angle = -10;
+                this.brake.play();
                 this.sparksEmitter.start();
             } else {
                 d = 10;
                 this.angle = 0;
+                this.brake.stop();
                 this.sparksEmitter.stop();
             };
             this.setAcceleration(a, 0);
@@ -267,6 +277,7 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
         this.on('animationcomplete', () => {    // callback after anim completes
             this.visible = false;
         });
+        this.brake.stop();
         this.sparksEmitter.stop();
         this.gameOver = true;
         this.speedTimer.paused = true;
