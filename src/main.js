@@ -10,8 +10,6 @@
 // Put our names
 // Do one final check on the code
 // Some sort of message to convey the purpose of the mole
-// Tilt mole?
-// Bouncing mole?
 // Mole Speed up message
 // Add numbers text (use a tween on the alpha)
 

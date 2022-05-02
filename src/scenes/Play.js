@@ -112,15 +112,15 @@ class Play extends Phaser.Scene {
         });
 
        // Debugging tool
-       var controlConfig = {
-            camera: this.cameras.main,
-            zoomIn: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q),
-            zoomOut: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E),
-            acceleration: 0.06,
-            drag: 0.0005,
-            maxSpeed: 1.0
-        };
-        controls = new Phaser.Cameras.Controls.SmoothedKeyControl(controlConfig);
+    //    var controlConfig = {
+    //         camera: this.cameras.main,
+    //         zoomIn: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q),
+    //         zoomOut: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E),
+    //         acceleration: 0.06,
+    //         drag: 0.0005,
+    //         maxSpeed: 1.0
+    //     };
+    //     controls = new Phaser.Cameras.Controls.SmoothedKeyControl(controlConfig);
 
         this.keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
 
@@ -137,8 +137,8 @@ class Play extends Phaser.Scene {
            }
         }); 
 
-        keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-        keySPACE.on('down', (key) => {
+        keyENTER = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
+        keyENTER.on('down', (key) => {
             if (this.gameOver) { 
                 this.audiotracks.forEach((sound) => {sound.stop();})
                 this.mole.stopAudio();
@@ -224,8 +224,24 @@ class Play extends Phaser.Scene {
         if (mole.plane == gem.plane||mole.switching){
             this.gemCollect.play();
             mole.updateScore(gem.value);
+            let valText = this.add.bitmapText(gem.x, gem.y, 'lavender','+' + gem.value).setDepth(10).setScale(gem.scale);
+            let valTween = this.tweens.create({
+                targets: valText,
+                y: valText.y - 30,
+                alpha: 0,
+                duration: 750,
+                ease: 'Sine.easeInOut',
+                easeParams: [ 3.5 ],
+                onComplete: (target) => {
+                    valText.destroy();
+       
+                },
+                onUpdate: () => {  },
+                paused: true
+            });
+            valTween.play();
             this.gemSpawner.obstacleGroup.killAndHide(gem);
-            this.gemSpawner.obstacleGroup.remove(gem);
+            this.gemSpawner.obstacleGroup.remove(gem); 
         }
     }
 
@@ -250,7 +266,7 @@ class Play extends Phaser.Scene {
             
             this.mole.update();
             this.scoreLabel.text = this.mole.score;
-            controls.update(delta);
+            //controls.update(delta);
             distance++;
             //this.gemSpawner.nextObstacleDistance = 50; //Gem Frenzy
 
