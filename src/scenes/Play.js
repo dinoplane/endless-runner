@@ -33,8 +33,8 @@ class Play extends Phaser.Scene {
         // this.particleSystem.setPosition(x, y);
 
         //this.physics.world.setBounds(this.WORLD_BOUNDS.min, 0, this.WORLD_BOUNDS.max, game.config.height);
-        this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, highScore);
-        this.scoreRight = this.add.text(game.config.width -2*(borderUISize - borderPadding), borderUISize + borderPadding*2, distance);
+        //this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, highScore);
+        //this.scoreRight = this.add.text(game.config.width -2*(borderUISize - borderPadding), borderUISize + borderPadding*2, distance);
         
         this.cave_wall0 = this.add.tileSprite(0, 0, game.config.width, game.config.height, 'cave_wall')
                                 .setOrigin(0, 0).setDepth(0);
@@ -58,6 +58,7 @@ class Play extends Phaser.Scene {
                                 .setDepth(10).setVisible(false);
 
 
+
         this.mole = new Mole(this, this.POSITIONS[0].x, this.POSITIONS[0].y + 10,
                                    this.POSITIONS[1].x, this.POSITIONS[1].y, 
                                    this.SCALE, 'mole_atlas', 'molecart0000').setDepth(7);
@@ -77,7 +78,7 @@ class Play extends Phaser.Scene {
                                                             this.POSITIONS[0].y+25,
                                                             this.POSITIONS[1].y+10,
                                                             this.SCALE);
-        //this.physics.add.overlap(this.mole, this.pitSpawner.obstacleGroup, (mole, pit) => {this.handlePits(mole, pit);});
+        this.physics.add.overlap(this.mole, this.pitSpawner.obstacleGroup, (mole, pit) => {this.handlePits(mole, pit);});
 
         this.gemSpawner = new GemSpawner(this, this.mole, Gem, game.config.width,
                                                             this.WORLD_BOUNDS.max ,
@@ -88,7 +89,7 @@ class Play extends Phaser.Scene {
                                                             200);
         this.physics.add.overlap(this.mole, this.gemSpawner.obstacleGroup, (mole, gem) => {this.handleGems(mole, gem);});
 
-        this.spawners = [this.pitSpawner,]// this.gemSpawner];
+        this.spawners = [this.pitSpawner,    this.gemSpawner];
 
         this.physics.add.overlap(this.gemSpawner.obstacleGroup, this.pitSpawner.obstacleGroup, 
                         (gem, pit) => {
@@ -274,7 +275,7 @@ class Play extends Phaser.Scene {
             this.bat.update();
 
             highScore+=distance;
-            this.scoreLeft.text=highScore;
+            //this.scoreLeft.text=highScore;
             //this.scoreRight.text=distance;
             
             if(!this.goneFar&&distance>=6000){

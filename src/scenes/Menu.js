@@ -35,6 +35,7 @@ class Menu extends Phaser.Scene {
 
         this.load.image('tutorial1', './assets/tutorial1.png');
         this.load.image('tutorial2', './assets/tutorial2.png');
+        this.load.image('credits', './assets/credits.png');
 
 
         this.load.bitmapFont('lavender', './assets/numbers.png', './assets/numbers.xml');
@@ -51,6 +52,7 @@ class Menu extends Phaser.Scene {
                                 .setOrigin(0, 0).setDepth(0);
         this.title = this.add.image(0, 0, 'title').setOrigin(0, 0).setDepth(0);
         this.buttons = this.add.image(0,0, 'buttons').setOrigin(0, 0).setDepth(0);
+        this.credits = this.add.image(0,0, 'credits').setOrigin(0, 0).setDepth(0);
 
         // let menuConfig = {
         //     fontFamily: 'Courier',

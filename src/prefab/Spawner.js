@@ -30,18 +30,7 @@ class Spawner{
             // once a obstacle is removed, it's added to the pool
 
             removeCallback: (obstacle) => {
-                //// // console.log("DED %d: 1st %d, %f, %d, %d", obstacle.pit_num, obstacle.y, obstacle.scale, obstacle.depth, obstacle.plane);
                 this.obstaclePool.add(obstacle)
-                //// // console.log("POOL ADDED %d: 1st %d, %f, %d, %d", obstacle.pit_num, obstacle.y, obstacle.scale, obstacle.depth, obstacle.plane);
-                // console.log("In group:------------------------");
-                this.obstacleGroup.getChildren().forEach(function(obstacle){
-                    // console.log("%d: %d", obstacle.pit_num, obstacle.x);
-                }, this);
-
-                // console.log("In pool:+++++++++++++++++++++++++");
-                this.obstaclePool.getChildren().forEach(function(obstacle){
-                    // console.log("%d: %d", obstacle.pit_num, obstacle.x);
-                }, this);
             }
         });
  
@@ -50,20 +39,7 @@ class Spawner{
             // once a obstacle is removed from the pool, it's added to the active obstacles group
 
             removeCallback: (obstacle) => {
-                //// // console.log("DED %d: 1st %d, %f, %d, %d", obstacle.pit_num, obstacle.y, obstacle.scale, obstacle.depth, obstacle.plane);
-
                 this.obstacleGroup.add(obstacle);
-
-                // console.log("In group++++++++++++++++++++++++");
-                this.obstacleGroup.getChildren().forEach(function(obstacle){
-                    // console.log("%d: %d", obstacle.pit_num, obstacle.x);
-                }, this);
-
-                // console.log("In pool------------------------");
-                this.obstaclePool.getChildren().forEach(function(obstacle){
-                    // console.log("%d: %d", obstacle.pit_num, obstacle.x);
-                }, this);
-                //// // console.log("GROUP ADDED %d: 1st %d, %f, %d, %d", obstacle.pit_num, obstacle.y, obstacle.scale, obstacle.depth, obstacle.plane);
             }
         });
     }
@@ -72,8 +48,7 @@ class Spawner{
     //Obstacle creation
     // the core of the script: obstacle are added from the pool or created on the fly
     addObstacle(posX){
-        let plane =   Phaser.Math.Between(0,1);  //
-        // // console.log("Adding obstacle")
+        let plane =   Phaser.Math.Between(0,1); 
         let obstacle;
         if(this.obstaclePool.getLength()){
             
@@ -132,7 +107,6 @@ class Spawner{
                 minDistance = Math.min(minDistance, obstacleDistance);
                 obstacle.y = this.POSITIONS[+obstacle.plane]; 
                 if(obstacle.x < - obstacle.displayWidth){
-                    // console.log("Removed");
                     obstacle.x = this.spawnMax;
                     obstacle.setVelocityX(0);
                     this.obstacleGroup.killAndHide(obstacle);
@@ -140,17 +114,12 @@ class Spawner{
                 } else if (obstacle.x > this.spawnMax) obstacle.x = this.spawnMax;
             }, this);
 
-            console.log(minDistance, ">", this.nextObstacleDistance);
- 
             // adding new obstacles
-            if(minDistance >= this.nextObstacleDistance ){//&& !this.cooldown){
+            if(minDistance >= this.nextObstacleDistance && !this.cooldown){
                 this.cooldown = true;
                 this.cooldownTimer.paused = false;
                 this.cooldownTimer.delay = (this.cooldownTimer.delay > 300) ? this.cooldownTimer.delay - 1 : this.cooldownTimer.delay;
                 let obstacle = this.addObstacle(this.spawnMax);
-                
-                //console.log("AFTER ADDING : 1st %d, %f, %d, %d", obstacle.y, obstacle.scale, obstacle.depth, obstacle.plane);
             }
     }
-
 }
