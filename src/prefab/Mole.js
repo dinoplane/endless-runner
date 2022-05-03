@@ -24,7 +24,7 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
 
         this.origy = y;
         this.depth = 7;
-        this.speed = 6;
+        this.speed = 60000;
         this.plane = false;
         this.centers = [x, cx]
         this.hits = 3;
@@ -56,7 +56,6 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
             blendMode: 'ADD',
             //angularDrag: 0,
         });
-        console.log(this.sparksEmitter)
         this.sparksEmitter.stop();
 
         // Timers

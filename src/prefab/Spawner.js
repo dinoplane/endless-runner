@@ -134,22 +134,22 @@ class Spawner{
                 if(obstacle.x < - obstacle.displayWidth){
                     // console.log("Removed");
                     obstacle.x = this.spawnMax;
+                    obstacle.setVelocityX(0);
                     this.obstacleGroup.killAndHide(obstacle);
                     this.obstacleGroup.remove(obstacle);
-                } else  if (obstacle.x > this.spawnMax) obstacle.x = this.spawnMax;
-
+                } else if (obstacle.x > this.spawnMax) obstacle.x = this.spawnMax;
             }, this);
 
-
+            console.log(minDistance, ">", this.nextObstacleDistance);
+ 
             // adding new obstacles
-            if(minDistance > this.nextObstacleDistance && !this.cooldown){
-                //// console.log(this.type, minDistance, ">", this.nextObstacleDistance);
+            if(minDistance >= this.nextObstacleDistance ){//&& !this.cooldown){
                 this.cooldown = true;
                 this.cooldownTimer.paused = false;
                 this.cooldownTimer.delay = (this.cooldownTimer.delay > 300) ? this.cooldownTimer.delay - 1 : this.cooldownTimer.delay;
                 let obstacle = this.addObstacle(this.spawnMax);
                 
-                // console.log("AFTER ADDING : 1st %d, %f, %d, %d", obstacle.y, obstacle.scale, obstacle.depth, obstacle.plane);
+                //console.log("AFTER ADDING : 1st %d, %f, %d, %d", obstacle.y, obstacle.scale, obstacle.depth, obstacle.plane);
             }
     }
 
