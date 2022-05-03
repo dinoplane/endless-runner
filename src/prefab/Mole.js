@@ -313,7 +313,7 @@ class Mole extends Phaser.Physics.Arcade.Sprite {
 
         this.backToFront = this.scene.tweens.create({
             targets: this,
-            x: (this.x < this.width*1.5) ? this.x + this.width*(1-this.scale)/2: this.x - 100,
+            x: (this.x < this.width*1.7) ? this.x + this.width*(1-this.scale)/2: this.x - 100,
             y: this.origy,
             scale: 1,
             duration: 250,
